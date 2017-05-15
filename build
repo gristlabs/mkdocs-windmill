@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Find the mkdocs command
+if hash mkdocs 2>/dev/null; then
+  MKDOCS=mkdocs
+else
+  MKDOCS=`pwd`/env/bin/mkdocs
+fi
+
+# If it's not available, show helpful instructions.
+if [[ ! -x "$MKDOCS" ]]; then
+  echo 'Build requires mkdocs in PATH or in env/.'
+  echo 'Please run `virtualenv env && env/bin/pip install mkdocs`.'
+  exit 2
+fi
+
+( cd test/mkdocs && $MKDOCS build -s -c -e ../../windmill -d outputs )
+
+
+python -mwebbrowser file://`pwd`/test/mkdocs/outputs/index.html
