@@ -149,7 +149,9 @@ $(document).ready(function() {
   $('.wm-toc-pane').on('click', '.wm-toc-opener', function(e) { $(this).toggleClass('open'); });
 
   // Once the article loads in the side-pane, close the dropdown.
-  $('.wm-article').on('load', closeTocDropdown);
+  $('.wm-article').on('load', function() {
+    closeTocDropdown();
+  });
 
   var iframe = $('.wm-article')[0];
 

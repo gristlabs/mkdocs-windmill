@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     {% set base_url = base_url or "./" %} 
+    {% set is_top = page and page.is_homepage %}
     {%- block site_meta %}
       <meta charset="utf-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -16,6 +17,10 @@
     {%- block htmltitle %}
       <title>{{ config.site_name }}</title>
     {%- endblock %}
+
+    {% if not is_top %}
+      <base target="_parent">
+    {% endif %}
 
     {%- block styles %}
       <link href="{{ base_url }}/css/bootstrap-3.3.7.min.css" rel="stylesheet">
@@ -56,7 +61,7 @@
     {%- block extrahead %} {% endblock %}
   </head>
 
-{% if page and page.is_homepage %}
+{% if is_top %}
 
   {% include "top-frame.html" %}
 
@@ -71,7 +76,7 @@
 
 {% else %}
 
-  <body>
+  <body class="wm-content">
     <div class="container-fluid">
       {% if config.extra.article_nav_top != False %}
         {% include "article-nav.html" %}

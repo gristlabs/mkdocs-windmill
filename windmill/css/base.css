@@ -34,8 +34,9 @@ body {
   text-decoration: none;
 }
 
-.wm-top-brand:active, .wm-top-brand:visited, .wm-top-brand:focus {
+.wm-top-brand:hover, .wm-top-brand:active, .wm-top-brand:visited, .wm-top-brand:focus {
   color: #fff;
+  text-decoration: none;
 }
 
 .wm-vcenter {
@@ -217,6 +218,17 @@ body {
 
 .wm-article-nav-buttons {
   margin: 1rem 0;
+}
+
+.wm-content img {
+  max-width: 100%;
+  display: inline-block;
+  padding: 4px;
+  line-height: 1.428571429;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin: 20px auto 30px auto;
 }
 
 .wm-article-nav {
