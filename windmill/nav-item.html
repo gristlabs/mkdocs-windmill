@@ -1,14 +1,14 @@
-<li class="toc-li toc-lev{{ navlevel }} {% if nav_item.children %}toc-openable{% endif %}">
+<li class="wm-toc-li wm-toc-lev{{ navlevel }} {% if nav_item.children %}wm-toc-opener{% endif %}">
   {%- if nav_item.url -%}
-    <a href="{{ nav_item.url }}" class="iframe article-link toc-text">{{ nav_item.title }}</a>
+    <a href="{{ nav_item.url }}" class="iframe article-link wm-toc-text">{{ nav_item.title }}</a>
   {%- else -%}
-    <span class="toc-text">{{ nav_item.title }}</span>
+    <span class="wm-toc-text">{{ nav_item.title }}</span>
   {%- endif %}
 </li>
 
 {%- if nav_item.children %}
-<li class="toc-li-nested">
-  <ul class="toctree">
+<li class="wm-toc-li-nested">
+  <ul class="wm-toctree">
     {%- set navlevel = navlevel + 1%}
     {%- for nav_item in nav_item.children %}
       {%- include 'nav-item.html' %}

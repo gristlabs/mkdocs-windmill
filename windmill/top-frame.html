@@ -1,37 +1,38 @@
-<body class="top-page">
+<body class="wm-top-page">
 
 <nav class="navbar">
   <div class="container-fluid">
     {# Logo and title #}
-    <div class="top-logo">
-    {% if config.extra.logo %}
-    <a href="{{ home }}" class="navbar-brand">
-      <img class="grist-logo" src="{{ base_url }}/{{ config.extra.logo }}"/>
-      <div class="grist-title">
+    <a href="{{ name }}" class="wm-top-brand">
+      <div class="wm-vcenter"></div>
+      {% if config.extra.logo %}
+        <img class="wm-top-logo" src="{{ base_url }}/{{ config.extra.logo }}"/>
+      {% endif %}
+      <div class="wm-top-title">
         {{ config.site_name }}<br>
         {% if config.extra.version %}
-        <span class="grist-version">v{{ config.extra.version }}</span>
+          <span class="wm-top-version">v{{ config.extra.version }}</span>
+        {% endif %}
       </div>
-      {% endif %}
     </a>
-    {% endif %}
-    </div>
 
     {# Toolbar with buttons and search #}
-    <div class="top-toolbar pull-right">
-      <div class="top-tool">
+    <div class="wm-top-toolbar pull-right">
+      <div class="wm-top-tool">
         <div class="btn-toolbar text-nowrap" role="toolbar">
+          {% if config.extra.history_buttons %}
           <div class="btn-group" role="group" aria-label="back">
             <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
             <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
           </div>
+          {% endif %}
           <div class="btn-group" role="group" aria-label="side-pane">
             <button id="toc-button" type="button" class="btn btn-sm btn-default"><i class="fa fa-th-list" aria-hidden="true"></i></button>
           </div>
         </div>
       </div>
-      <div class="top-tool">
-        <div class="input-group input-group-sm top-search">
+      <div class="wm-top-tool">
+        <div class="input-group input-group-sm wm-top-search">
           <input type="text" class="form-control" placeholder="Search">
           <span class="input-group-btn" role="search">
             <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
@@ -43,19 +44,20 @@
 </nav>
 
 {# Side-pane with table of contents #}
-<div class="main-content">
-<nav class="toc-pane">
-  {%- block site_nav %}
-  <ul class="toctree">
-    {% set navlevel = 1 %}
-    {% for nav_item in nav %}
-        {%- include 'nav-item.html' %}
-    {% endfor %}
-  </ul>
-  {%- endblock %}
-</nav>
-<div class="content-pane">
-  <iframe class="article" name="article"></iframe>
+<div id="main-content">
+  <nav class="wm-toc-pane">
+    {%- block site_nav %}
+    <ul class="wm-toctree">
+      {% set navlevel = 1 %}
+      {% for nav_item in nav %}
+          {%- include 'nav-item.html' %}
+      {% endfor %}
+    </ul>
+    {%- endblock %}
+  </nav>
+  <div class="wm-content-pane">
+    <iframe class="wm-article" name="article"></iframe>
+  </div>
 </div>
 
 </body>

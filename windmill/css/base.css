@@ -1,0 +1,355 @@
+body {
+    background-color: #f8f8f8;
+}
+
+/***********************************************************************
+ Top bar
+ ***********************************************************************/
+
+.navbar {
+  background-color: #546e7a;
+  box-shadow: 0 1.5px 3px rgba(0,0,0,.24), 0 3px 8px rgba(0,0,0,.05);
+  border: none;
+  border-radius: 0px;
+  margin-bottom: 0px;
+  height: 50px;
+  z-index: 2;
+}
+
+.wm-top-page {
+  overflow: hidden;
+}
+
+.wm-top-brand {
+  display: inline-block;
+  overflow: visible;
+  width: 10rem;
+  height: 50px;
+  padding: 0 15px;
+  margin-left: -15px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 20px;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.wm-top-brand:active, .wm-top-brand:visited, .wm-top-brand:focus {
+  color: #fff;
+}
+
+.wm-vcenter {
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.wm-top-title {
+  margin-left: 1rem;
+  display: inline-block;
+  line-height: 16px;
+  vertical-align: middle;
+}
+
+.wm-top-version {
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  padding: 0px 5px;
+  color: #ddd;
+  font-size: 8pt;
+}
+
+.wm-top-toolbar {
+  margin-top: 10px;
+  display: inline-block;
+  width: calc(100% - 10rem);
+  overflow: visible;
+  text-align: right;
+}
+
+.wm-top-tool {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.wm-top-search {
+  max-width: 20rem;
+  margin-left: 1rem;
+}
+
+/***********************************************************************
+ Table of contents (side pane)
+ ***********************************************************************/
+
+.wm-toc-pane {
+  position: fixed;
+  top: 0px;
+  padding-top: 70px;
+  height: 100%;
+  width: 250px;
+  z-index: 1;
+  background-color: #f2f2f2;
+  border-right: 1px solid #e0e0e0;
+  overflow: auto;
+  margin-left: 0px;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-bottom: 2rem;
+  transition: margin-left 0.3s;
+}
+
+.wm-content-pane {
+  position: fixed;
+  top: 0px;
+  padding-top: 50px;
+  height: 100%;
+  width: 100%;
+  z-index: 0;
+  padding-left: 250px;
+  transition: padding-left 0.3s;
+}
+
+.wm-toc-pane.wm-toc-dropdown {
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  margin-left: 0;
+}
+
+.wm-toc-hidden > .wm-toc-pane {
+  margin-left: -250px;
+}
+
+.wm-toc-hidden > .wm-content-pane {
+  padding-left: 0px;
+}
+
+@media (max-width: 600px) {
+  .wm-toc-pane {
+    display: none;
+  }
+  .wm-content-pane {
+    padding-left: 0px;
+  }
+}
+
+.wm-toctree {
+  list-style-type: none;
+  line-height: 16px;
+  padding-left: 0px;
+}
+
+.wm-toctree a, .wm-toctree a:visited, .wm-toctree a:hover, .wm-toctree a:focus {
+  color: #546e7a;
+  text-decoration: none;
+  outline: none;
+}
+
+.wm-toc-text {
+  display: block;
+  padding: 4px;
+  cursor: pointer;
+}
+
+.wm-toc-lev1 > .wm-toc-text { padding-left: 14px; }
+.wm-toc-lev2 > .wm-toc-text { padding-left: 28px; }
+.wm-toc-lev3 > .wm-toc-text { padding-left: 42px; }
+
+.wm-toc-li-nested {
+  padding: 0px;
+  margin: 0px;
+}
+
+.wm-toc-opener > .wm-toc-text::before {
+  content: "\25B6";
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 8px;
+  width: 14px;
+}
+
+.wm-toc-opener.open > .wm-toc-text::before {
+  content: "\25BC";
+}
+
+.wm-toc-li-nested {
+  display: none;
+}
+
+.wm-toc-li.open + .wm-toc-li-nested {
+  display: block;
+}
+
+.wm-toc-li.current, .wm-toc-li.current:hover {
+  background-color: #546e7a;
+  color: white;
+}
+
+.wm-toc-li:hover {
+  background-color: #e0e0e0;
+}
+
+.wm-toc-li.current a {
+  color: white;
+}
+
+
+.wm-article {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn:active.focus, .btn.active.focus {
+  outline: none;
+}
+
+.btn-default:focus, .btn-default.focus {
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.btn-default.greybtn {
+  color: #888;
+}
+
+.article-nav-buttons {
+  margin-top: 4rem;
+}
+
+.article-nav {
+  display: inline-block;
+  max-width: 50%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #546e7a;
+  text-align: right;
+}
+
+.article-nav > .btn-link {
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
+.article-nav > a, .article-nav > a:visited, .article-nav > a:hover, .article-nav > a:focus {
+  color: #546e7a;
+  text-decoration: none;
+  outline: none;
+}
+
+/***********************************************************************
+ * The rest is taken from base.css from mkdocs.
+ ***********************************************************************/
+
+.source-links {
+  float: right;
+}
+
+h1 {
+    color: #444;
+    font-weight: 400;
+    font-size: 42px;
+}
+
+h2, h3, h4, h5, h6 {
+    color: #444;
+    font-weight: 300;
+}
+
+hr {
+    border-top: 1px solid #aaa;
+}
+
+pre, .rst-content tt {
+    max-width: 100%;
+    background: #fff;
+    border: solid 1px #e1e4e5;
+    color: #333;
+    overflow-x: auto;
+}
+
+code.code-large, .rst-content tt.code-large {
+    font-size: 90%;
+}
+
+code {
+    padding: 2px 5px;
+    background: #fff;
+    border: solid 1px #e1e4e5;
+    color: #333;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+pre code {
+    background: transparent;
+    border: none;
+    white-space: pre;
+    word-wrap: normal;
+    font-family: monospace,serif;
+    font-size: 12px;
+}
+
+a code {
+    color: #2FA4E7;
+}
+
+a:hover code, a:focus code {
+    color: #157AB5;
+}
+
+footer {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    text-align: center;
+    font-weight: 200;
+}
+
+.modal-dialog {
+    margin-top: 60px;
+}
+
+.headerlink {
+    font-family: FontAwesome;
+    font-size: 14px;
+    display: none;
+    padding-left: .5em;
+}
+
+h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .headerlink, h5:hover .headerlink, h6:hover .headerlink{
+    display:inline-block;
+}
+
+.admonition {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    text-align: left;
+}
+
+.admonition.note { /* csslint allow: adjoining-classes */
+    color: #3a87ad;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+.admonition.warning { /* csslint allow: adjoining-classes */
+    color: #c09853;
+    background-color: #fcf8e3;
+    border-color: #fbeed5;
+}
+
+.admonition.danger { /* csslint allow: adjoining-classes */
+    color: #b94a48;
+    background-color: #f2dede;
+    border-color: #eed3d7;
+}
+
+.admonition-title {
+    font-weight: bold;
+    text-align: left;
+}
