@@ -19,7 +19,7 @@
 
     {%- block styles %}
       <link href="{{ base_url }}/css/bootstrap-3.3.7.min.css" rel="stylesheet">
-      <link href="{{ base_url }}/css/font-awesome-4.5.0.css" rel="stylesheet">
+      <link href="{{ base_url }}/css/font-awesome-4.7.0.css" rel="stylesheet">
       <link href="{{ base_url }}/css/base.css" rel="stylesheet">
       <link rel="stylesheet" href="{{ base_url }}/css/highlight.css">
       {%- for path in extra_css %}
@@ -73,45 +73,23 @@
 
   <body>
     <div class="container-fluid">
+      {% if config.extra.article_nav_top != False %}
+        {% include "article-nav.html" %}
+      {% endif %}
+
       {%- block content %}
       {% include "content.html" %}
       {%- endblock %}
 
-      {# Work-in-progress:
-      {%- block next_prev %}
-      {% if page and (page.next_page or page.previous_page) %}
-        <div class="article-nav-buttons" role="navigation" aria-label="navigation">
-          {% if page.next_page %}
-          <div class="article-nav pull-right">
-            <a href="{{ page.next_page.url }}" class="btn btn-link">
-              {{ page.next_page.title }}
-            </a>
-            <a href="{{ page.next_page.url }}" class="btn btn-default">
-              Next
-              <i class="fa fa-arrow-right" aria-hidden="true"></i>
-            </a>
-          </div>
-          {% endif %}
-          {% if page.previous_page %}
-          <div class="article-nav">
-            <a href="{{ page.previous_page.url }}" class="btn btn-default">
-              <i class="fa fa-arrow-left" aria-hidden="true"></i>
-              Previous
-            </a>
-            <a href="{{ page.previous_page.url }}" class="btn btn-link">
-              {{ page.previous_page.title }}
-            </a>
-          </div>
-          {% endif %}
-        </div>
+      <br>
+      {% if config.extra.article_nav_bottom != False %}
+        {% include "article-nav.html" %}
+        <br>
       {% endif %}
-      {%- endblock %}
-      #}
     </div>
 
     <footer class="col-md-12">
     {%- block footer %}
-      <hr>
       {%- if config.copyright %}<p>{{ config.copyright }}</p>{%- endif %}
       <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
     {%- endblock %}

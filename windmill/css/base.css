@@ -215,26 +215,27 @@ body {
   color: #888;
 }
 
-.article-nav-buttons {
-  margin-top: 4rem;
+.wm-article-nav-buttons {
+  margin: 1rem 0;
 }
 
-.article-nav {
+.wm-article-nav {
   display: inline-block;
-  max-width: 50%;
+  max-width: 48%;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
   color: #546e7a;
   text-align: right;
 }
 
-.article-nav > .btn-link {
-  padding-left: 0px;
-  padding-right: 0px;
+.wm-article-nav > .btn-link {
+  display: block;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.article-nav > a, .article-nav > a:visited, .article-nav > a:hover, .article-nav > a:focus {
+.wm-article-nav > a, .wm-article-nav > a:visited, .wm-article-nav > a:hover, .wm-article-nav > a:focus {
   color: #546e7a;
   text-decoration: none;
   outline: none;
@@ -302,10 +303,10 @@ a:hover code, a:focus code {
 }
 
 footer {
-    margin-top: 30px;
     margin-bottom: 10px;
     text-align: center;
     font-weight: 200;
+    font-size: smaller;
 }
 
 .modal-dialog {
