@@ -17,6 +17,8 @@
     <title>{{ config.site_name }}</title>
   {%- endblock %}
 
+  <base target="_parent">
+
   {%- block styles %}
     <link href="{{ base_url }}/css/bootstrap-3.3.7.min.css" rel="stylesheet">
     <link href="{{ base_url }}/css/font-awesome-4.7.0.css" rel="stylesheet">
@@ -57,89 +59,49 @@
 </head>
 
 
-<body class="wm-top-page">
+<body class="wm-content">
+  <div class="container-fluid">
+    {% if config.extra.article_nav_top != False %}
+      {% include "article-nav.html" %}
+    {% endif %}
 
-  <nav class="navbar">
-    <div class="container-fluid">
-      {# Logo and title #}
-      <a href="{{ name }}" class="wm-top-brand">
-        <div class="wm-vcenter"></div>
-        {% if config.extra.logo %}
-          <img class="wm-top-logo" src="{{ base_url }}/{{ config.extra.logo }}"/>
-        {% endif %}
-        <div class="wm-top-title">
-          {{ config.site_name }}<br>
-          {% if config.extra.version %}
-            <span class="wm-top-version">v{{ config.extra.version }}</span>
-          {% endif %}
-        </div>
-      </a>
-
-      {# Toolbar with buttons and search #}
-      <div class="wm-top-toolbar pull-right">
-        <div class="wm-top-tool">
-          <div class="btn-toolbar text-nowrap" role="toolbar">
-            {% if config.extra.history_buttons %}
-            <div class="btn-group" role="group" aria-label="back">
-              <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
-              <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-            </div>
-            {% endif %}
-            <div class="btn-group" role="group" aria-label="side-pane">
-              <button id="toc-button" type="button" class="btn btn-sm btn-default"><i class="fa fa-th-list" aria-hidden="true"></i></button>
-            </div>
-          </div>
-        </div>
-        <div class="wm-top-tool">
-          <div class="input-group input-group-sm wm-top-search">
-            <input type="text" class="form-control" placeholder="Search">
-            <span class="input-group-btn" role="search">
-              <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  {# Side-pane with table of contents #}
-  <div id="main-content">
-    <nav class="wm-toc-pane">
-      {%- block site_nav %}
-      <ul class="wm-toctree">
-        {% set navlevel = 1 %}
-        {% for nav_item in nav %}
-            {%- include 'nav-item.html' %}
+    {%- block content %}
+      {% if page and page.meta.source %}
+        <div class="source-links">
+        {% for filename in page.meta.source %}
+            <span class="label label-primary">{{ filename }}</span>
         {% endfor %}
-      </ul>
-      {%- endblock %}
-    </nav>
+        </div>
+      {% endif %}
 
-    <div class="wm-content-pane">
-      <iframe class="wm-article" name="article"></iframe>
-    </div>
+      {{ page.content }}
+    {%- endblock %}
+
+    <br>
+    {% if config.extra.article_nav_bottom != False %}
+      {% include "article-nav.html" %}
+      <br>
+    {% endif %}
   </div>
+
+  <footer class="col-md-12">
+  {%- block footer %}
+    {%- if config.copyright %}<p>{{ config.copyright }}</p>{%- endif %}
+    <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+  {%- endblock %}
+  </footer>
 
   {%- block scripts %}
     <script>
       var base_url = '{{ base_url }}';
-      var mainWindow = window;
+      var mainWindow = window.parent;
     </script>
     <script data-main="{{ base_url }}/mkdocs/js/search.js" src="{{ base_url }}/mkdocs/js/require.js"></script>
     <script src="{{ base_url }}/js/base.js"></script>
     {%- for path in extra_javascript %}
       <script src="{{ path }}"></script>
     {%- endfor %}
-    <script>var homepage_contents = '
-      {%- filter replace("'", "\\'")|replace("\n", "\\n")|replace("/script", "/' + 'script") %}
-      {%- include "base-page.html" %}
-      {%- endfilter %}';
-    </script>
   {%- endblock %}
 
 </body>
 </html>
-<!--
-MkDocs version : {{ mkdocs_version }}
-Build Date UTC : {{ build_date_utc }}
--->

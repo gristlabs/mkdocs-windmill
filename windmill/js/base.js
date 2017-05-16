@@ -1,4 +1,4 @@
-/* global window, document, $, hljs */
+/* global window, document, $, hljs, mainWindow */
 "use strict";
 
 function getSearchTerm()
@@ -27,6 +27,8 @@ function getSearchTerm()
 // Links with class 'iframe' will be automatically adjusted to do the right thing (i.e. redirect
 // the top-level page instead, to a modified hash part of the URL).
 
+var iframeWindow = null;
+
 function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
 
@@ -41,7 +43,7 @@ function getRootUrl(url) {
  * Returns the full URL for the top window given the full URL of the iframe and optional rootUrl
  */
 function getTopUrlFromIframe(iframeUrl, optRootUrl) {
-  var rootUrl = optRootUrl || getRootUrl(window.location.href);
+  var rootUrl = optRootUrl || getRootUrl(mainWindow.location.href);
   var prefix = rootUrl + (endsWith(rootUrl, '/') ? '' : '/');
   console.log("getTopUrlFromIframe(%s, %s)", iframeUrl, rootUrl);
   if (startsWith(iframeUrl, prefix)) {
@@ -55,12 +57,14 @@ function getTopUrlFromIframe(iframeUrl, optRootUrl) {
  * Returns the full URL for the iframe given the full URL of the top window and optional rootUrl.
  */
 function getIframeUrlFromTop(topUrl, optRootUrl) {
-  var rootUrl = optRootUrl || getRootUrl(window.location.href);
+  var rootUrl = optRootUrl || getRootUrl(mainWindow.location.href);
   console.log("getIframeUrlFromTop(%s, %s)", topUrl, rootUrl);
   if (topUrl.startsWith(rootUrl + '#')) {
     var relPath = topUrl.slice(rootUrl.length + 1);
-    var prefix = rootUrl + (endsWith(rootUrl, '/') ? '' : '/');
-    return prefix + relPath;
+    if (relPath) {
+      var prefix = rootUrl + (endsWith(rootUrl, '/') ? '' : '/');
+      return prefix + relPath;
+    }
   }
   return null;
 }
@@ -68,12 +72,22 @@ function getIframeUrlFromTop(topUrl, optRootUrl) {
 /**
  * Redirects the iframe to reflect the path represented by the main window's current URL.
  */
-function updateIframe(iframe, enableForwardNav) {
+function updateIframe(enableForwardNav) {
   enableForward(enableForwardNav);
 
-  var iframeUrl = getIframeUrlFromTop(window.location.href);
-  if (!iframeUrl) { return; }
-  var loc = iframe.contentWindow.location;
+  var iframeUrl = getIframeUrlFromTop(mainWindow.location.href);
+  if (!iframeUrl) {
+    // Top page. Load iframe contents from the homepage_contents variable instead.
+    // TODO this can be done far more elegantly once theme_config is released for mkdocs if we can
+    // get the top frame generated into a separate file from the index page.
+    var doc = iframeWindow.document;
+    doc.open();
+    doc.write(mainWindow.homepage_contents);
+    doc.close();
+    return;
+  }
+
+  var loc = iframeWindow.location;
 
   console.log("updateIframe: %s -> %s (%s)", loc.href, iframeUrl,
     loc.href === iframeUrl ? "same" : "replacing");
@@ -102,10 +116,9 @@ function closeTocDropdown() {
   updateTocButtonState();
 }
 
-$(document).ready(function() {
-
+function initMainWindow() {
   var search_term = getSearchTerm(),
-    $search_modal = $('#mkdocs_search_modal');
+      $search_modal = $('#mkdocs_search_modal');
 
   if(search_term){
     $search_modal.modal();
@@ -153,21 +166,32 @@ $(document).ready(function() {
     closeTocDropdown();
   });
 
-  var iframe = $('.wm-article')[0];
+  // Load the iframe now, and whenever we navigate the top frame.
+  updateIframe(false);
+  $(window).on('popstate', function() { updateIframe(true); });
+}
+
+$(document).ready(function() {
+
+  if (window === mainWindow) {
+    iframeWindow = $('.wm-article')[0].contentWindow;
+    initMainWindow();
+  } else {
+    iframeWindow = window;
+  }
 
   // Initialize links that should load into the iframe.
-  $('body').on('click', 'a.iframe', function(e) {
-    e.preventDefault();
+  $('body').on('click', 'a', function(e) {
     var newUrl = getTopUrlFromIframe(this.href);
-    if (newUrl !== window.location.href) {
-      window.history.pushState(null, '', newUrl);
-      updateIframe(iframe, false);
+    if (newUrl) {
+      e.preventDefault();
+      console.log("newUrl %s, mainWindow href %s", newUrl, mainWindow.location.href);
+      if (newUrl !== mainWindow.location.href) {
+        mainWindow.history.pushState(null, '', newUrl);
+        updateIframe(false);
+      }
     }
   });
-
-  // Load the iframe now, and whenever we navigate the top frame.
-  updateIframe(iframe, false);
-  $(window).on('popstate', function() { updateIframe(iframe, true); });
 });
 
 
