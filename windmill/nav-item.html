@@ -1,6 +1,6 @@
 <li class="wm-toc-li wm-toc-lev{{ navlevel }} {% if nav_item.children %}wm-toc-opener{% endif %}">
   {%- if nav_item.url -%}
-    <a href="{{ nav_item.url }}" class="iframe article-link wm-toc-text">{{ nav_item.title }}</a>
+    <a href="{{ nav_item.url }}" class="wm-article-link wm-toc-text">{{ nav_item.title }}</a>
   {%- else -%}
     <span class="wm-toc-text">{{ nav_item.title }}</span>
   {%- endif %}

@@ -28,6 +28,7 @@ function getSearchTerm()
 // the top-level page instead, to a modified hash part of the URL).
 
 var iframeWindow = null;
+var rootUrl = getRootUrl(mainWindow.location.href);
 
 function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
@@ -39,35 +40,17 @@ function getRootUrl(url) {
   return url.replace(/[^/?#]*([?#].*)?$/, '');
 }
 
-/**
- * Returns the full URL for the top window given the full URL of the iframe and optional rootUrl
- */
-function getTopUrlFromIframe(iframeUrl, optRootUrl) {
-  var rootUrl = optRootUrl || getRootUrl(mainWindow.location.href);
-  var prefix = rootUrl + (endsWith(rootUrl, '/') ? '' : '/');
-  console.log("getTopUrlFromIframe(%s, %s)", iframeUrl, rootUrl);
-  if (startsWith(iframeUrl, prefix)) {
-    var relPath = iframeUrl.slice(prefix.length);
-    return rootUrl + '#' + relPath;
-  }
-  return null;
+function getRelPath(separator, absUrl) {
+  var prefix = rootUrl + (endsWith(rootUrl, separator) ? '' : separator);
+  return startsWith(absUrl, prefix) ? absUrl.slice(prefix.length) : null;
 }
 
-/**
- * Returns the full URL for the iframe given the full URL of the top window and optional rootUrl.
- */
-function getIframeUrlFromTop(topUrl, optRootUrl) {
-  var rootUrl = optRootUrl || getRootUrl(mainWindow.location.href);
-  console.log("getIframeUrlFromTop(%s, %s)", topUrl, rootUrl);
-  if (topUrl.startsWith(rootUrl + '#')) {
-    var relPath = topUrl.slice(rootUrl.length + 1);
-    if (relPath) {
-      var prefix = rootUrl + (endsWith(rootUrl, '/') ? '' : '/');
-      return prefix + relPath;
-    }
-  }
-  return null;
+function getAbsUrl(separator, relPath) {
+  var sep = endsWith(rootUrl, separator) ? '' : separator;
+  return relPath === null ? null : rootUrl + sep + relPath;
 }
+
+
 
 /**
  * Redirects the iframe to reflect the path represented by the main window's current URL.
@@ -75,8 +58,8 @@ function getIframeUrlFromTop(topUrl, optRootUrl) {
 function updateIframe(enableForwardNav) {
   enableForward(enableForwardNav);
 
-  var iframeUrl = getIframeUrlFromTop(mainWindow.location.href);
-  if (!iframeUrl) {
+  var relPath = getRelPath('#', mainWindow.location.href);
+  if (!relPath) {
     // Top page. Load iframe contents from the homepage_contents variable instead.
     // TODO this can be done far more elegantly once theme_config is released for mkdocs if we can
     // get the top frame generated into a separate file from the index page.
@@ -88,6 +71,7 @@ function updateIframe(enableForwardNav) {
   }
 
   var loc = iframeWindow.location;
+  var iframeUrl = getAbsUrl('/', relPath);
 
   console.log("updateIframe: %s -> %s (%s)", loc.href, iframeUrl,
     loc.href === iframeUrl ? "same" : "replacing");
@@ -114,6 +98,19 @@ function updateTocButtonState() {
 function closeTocDropdown() {
   $('.wm-toc-dropdown').removeClass('wm-toc-dropdown');
   updateTocButtonState();
+}
+
+function handleLinkClick(link, event) {
+  var relPath = getRelPath('/', link.href);
+  if (relPath) {
+    event.preventDefault();
+    var newUrl = getAbsUrl('#', relPath);
+    console.log("newUrl %s, mainWindow href %s", newUrl, mainWindow.location.href);
+    if (newUrl !== mainWindow.location.href) {
+      mainWindow.history.pushState(null, '', newUrl);
+      updateIframe(false);
+    }
+  }
 }
 
 function initMainWindow() {
@@ -163,6 +160,13 @@ function initMainWindow() {
 
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
+    $('.current').removeClass('current');
+
+    var relPath = getRelPath('/', iframeWindow.location.href);
+    var selector = '.wm-article-link[href="' + relPath + '"]';
+    $(selector).closest('.wm-toc-li').addClass('current');
+    $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
+
     closeTocDropdown();
   });
 
@@ -171,31 +175,14 @@ function initMainWindow() {
   $(window).on('popstate', function() { updateIframe(true); });
 }
 
-$(document).ready(function() {
+// Initialize links that should load into the iframe.
+$(document).on('click', 'a', function(e) { handleLinkClick(this, e); });
 
-  if (window === mainWindow) {
+if (window === mainWindow) {
+  $(document).ready(function() {
     iframeWindow = $('.wm-article')[0].contentWindow;
     initMainWindow();
-  } else {
-    iframeWindow = window;
-  }
-
-  // Initialize links that should load into the iframe.
-  $('body').on('click', 'a', function(e) {
-    var newUrl = getTopUrlFromIframe(this.href);
-    if (newUrl) {
-      e.preventDefault();
-      console.log("newUrl %s, mainWindow href %s", newUrl, mainWindow.location.href);
-      if (newUrl !== mainWindow.location.href) {
-        mainWindow.history.pushState(null, '', newUrl);
-        updateIframe(false);
-      }
-    }
   });
-});
-
-
-/* Prevent disabled links from causing a page reload */
-$("li.disabled a").click(function(event) {
-    event.preventDefault();
-});
+} else {
+  iframeWindow = window;
+}
