@@ -23,9 +23,7 @@
     <link href="{{ base_url }}/css/bootstrap-3.3.7.min.css" rel="stylesheet">
     <link href="{{ base_url }}/css/font-awesome-4.7.0.css" rel="stylesheet">
     <link href="{{ base_url }}/css/base.css" rel="stylesheet">
-    {% if not is_top %}
-      <link rel="stylesheet" href="{{ base_url }}/css/highlight.css">
-    {% endif %}
+    <link rel="stylesheet" href="{{ base_url }}/css/highlight.css">
     {%- for path in extra_css %}
     <link href="{{ path }}" rel="stylesheet">
     {%- endfor %}
@@ -40,17 +38,16 @@
 
     <script src="{{ base_url }}/js/jquery-3.2.1.min.js"></script>
     <script src="{{ base_url }}/js/bootstrap-3.3.7.min.js"></script>
+    <script src="{{ base_url }}/js/highlight.pack.js"></script>
     {% if is_top %}
       <script src="{{ base_url }}/js/elasticlunr.min.js"></script>
-    {% else %}
-      <script src="{{ base_url }}/js/highlight.pack.js"></script>
     {% endif %}
   {%- endblock %}
 
   {%- block scripts %}
     <script>
       var base_url = '{{ base_url }}';
-      var is_top = {{ 'true' if is_top else 'false' }};
+      var is_top_frame = {% if is_top %}(window === window.parent){% else %}false{% endif %};
     </script>
     <script src="{{ base_url }}/js/base.js"></script>
     {%- for path in extra_javascript %}
@@ -73,76 +70,61 @@
   {%- endblock %}
 
   {%- block extrahead %} {% endblock %}
-
-  {%- if is_top %}
-    <base target="_parent">
-  {%- endif %}
-
 </head>
 
-<body class="{{ 'wm-top-page' if is_top else 'wm-content' }}">
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
 
+{#
+ # Code for the top frame. It should ideally be separate from the index page (which is likely
+ # possible once theme_config is released with mkdocs 1.0).
+ #}
 {%- if is_top -%}
-  {#
-  Code for the top frame. It should ideally be separate from the index page (which is likely
-  possible once theme_config is released with mkdocs 1.0). For now, they are generated as a single
-  file, with index page's content saved into and written to the iframe from a JS string.
-  #}
-
   {% include 'topbar.html' %}
 
-  <div id="main-content">
+  <div id="main-content" class="wm-page-top-frame">
     {% include 'nav-pane.html' %}
     <div class="wm-content-pane">
       <iframe class="wm-article" name="article"></iframe>
     </div>
   </div>
 
-  {# Contents of the iframe part of the homepage, as an escaped JS string. #}
-  <script>var homepage_contents = '
-    {%- filter replace("'", "\\'")|replace("\n", "\\n")|replace("/script", "/' + 'script") %}
-    {%- with %}
-    {%- set force_plain_page = true %}
-    {%- include "base.html" %}
-    {%- endwith %}
-    {%- endfilter %}';
-  </script>
-
-{%- else -%}
-  {# Code for the main template for all content pages. #}
-
-  <div class="container-fluid">
-    {%- if config.extra.article_nav_top != False %}
-      {% include "article-nav.html" %}
-    {%- endif %}
-
-    {%- block content %}
-      {% if page and page.meta.source %}
-        <div class="source-links">
-        {% for filename in page.meta.source %}
-            <span class="label label-primary">{{ filename }}</span>
-        {% endfor %}
-        </div>
-      {% endif %}
-
-      {{ page.content }}
-    {%- endblock %}
-
-    <br>
-    {%- if config.extra.article_nav_bottom != False %}
-      {% include "article-nav.html" %}
-      <br>
-    {%- endif %}
-  </div>
-
-  <footer class="col-md-12">
-  {%- block footer %}
-    {%- if config.copyright %}<p>{{ config.copyright }}</p>{%- endif %}
-    <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
-  {%- endblock %}
-  </footer>
-
 {%- endif -%}
+
+{# Code for the main template for all content pages. #}
+
+<div class="container-fluid wm-page-content">
+  {%- if config.extra.article_nav_top != False %}
+    {% include "article-nav.html" %}
+  {%- endif %}
+
+  {%- block content %}
+    {% if page and page.meta.source %}
+      <div class="source-links">
+      {% for filename in page.meta.source %}
+          <span class="label label-primary">{{ filename }}</span>
+      {% endfor %}
+      </div>
+    {% endif %}
+
+    {{ page.content }}
+  {%- endblock %}
+
+  <br>
+  {%- if config.extra.article_nav_bottom != False %}
+    {% include "article-nav.html" %}
+    <br>
+  {%- endif %}
+</div>
+
+<footer class="col-md-12 wm-page-content">
+{%- block footer %}
+  {%- if config.copyright %}<p>{{ config.copyright }}</p>{%- endif %}
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+{%- endblock %}
+</footer>
 
 </body>
 </html>

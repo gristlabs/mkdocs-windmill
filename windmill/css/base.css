@@ -20,6 +20,10 @@ body {
   overflow: hidden;
 }
 
+.wm-page-top-frame { display: none; }
+.wm-top-page > .wm-page-top-frame { display: block; }
+.wm-top-page > .wm-page-content { display: none; }
+
 .wm-top-brand {
   display: inline-block;
   overflow: visible;
@@ -220,7 +224,7 @@ body {
   margin: 1rem 0;
 }
 
-.wm-content img {
+.wm-page-content img {
   max-width: 100%;
   display: inline-block;
   padding: 4px;
@@ -261,7 +265,7 @@ body {
   overflow-y: auto;
   overflow-x: hidden;
   white-space: normal;
-  max-height: calc(100vh - 90px);
+  max-height: calc(100vh - 60px);
   max-width: 90vw;
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif,FontAwesome;
 }

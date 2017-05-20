@@ -1,4 +1,4 @@
-/* global window, document, $, hljs, elasticlunr, base_url, is_top */
+/* global window, document, $, hljs, elasticlunr, base_url, is_top_frame */
 "use strict";
 
 // The full page consists of a main window (top-frame.html) with navigation and table of contents,
@@ -6,7 +6,7 @@
 // main window's #hash portion of the URL. In fact, we use the simple rule: main window's URL of
 // "rootUrl#relPath" corresponds to iframe's URL of "rootUrl/relPath".
 
-var mainWindow = is_top ? window : (window.parent !== window ? window.parent : null);
+var mainWindow = is_top_frame ? window : (window.parent !== window ? window.parent : null);
 var iframeWindow = null;
 var rootUrl = mainWindow ? getRootUrl(mainWindow.location.href) : null;
 
@@ -36,15 +36,6 @@ function getAbsUrl(separator, relPath) {
   return relPath === null ? null : rootUrl + sep + relPath;
 }
 
-function stripUrlFragment(url) {
-  var hashPos = url.indexOf('#');
-  return hashPos < 0 ? url : url.slice(0, hashPos);
-}
-
-function isSameUpToFragment(url1, url2) {
-  return stripUrlFragment(url1) === stripUrlFragment(url2);
-}
-
 /**
  * Redirects the iframe to reflect the path represented by the main window's current URL.
  * (In our design, nothing should change iframe's src except via updateIframe(), or back/forward
@@ -55,11 +46,6 @@ function updateIframe(enableForwardNav) {
   $('#hist-fwd').toggleClass('greybtn', !enableForwardNav);
 
   var targetRelPath = getRelPath('#', mainWindow.location.href) || '';
-  var isHomepage = false;
-  if (isSameUpToFragment(targetRelPath, '')) {
-    targetRelPath = base_url + '_homepage_.html' + targetRelPath;
-    isHomepage = true;
-  }
   var targetIframeUrl = getAbsUrl('/', targetRelPath);
   var loc = iframeWindow.location;
   var currentIframeUrl = _safeGetLocationHref(loc);
@@ -69,20 +55,6 @@ function updateIframe(enableForwardNav) {
 
   if (currentIframeUrl !== targetIframeUrl) {
     loc.replace(targetIframeUrl);
-    // TODO: There is a problem here. After visiting the "homepage" URL, the iframe's src will be
-    // set to some URL, which can't be a real one. On subsequent page reload, the browser will try
-    // to load that URL and fail. But it'll be hard for us here to know that that URL isn't
-    // loaded. In short, we really need a separate page. The next attempt is to use index.html to
-    // serve top page or homepage, using the same html file.
-    if (isHomepage && !isSameUpToFragment(targetIframeUrl, currentIframeUrl)) {
-      // Top page. Load iframe contents from the homepage_contents variable instead.
-      // TODO this can be done far more elegantly once theme_config is released for mkdocs if we can
-      // get the top frame generated into a separate file from the index page.
-      var doc = iframeWindow.document;
-      doc.open();
-      doc.write(mainWindow.homepage_contents);
-      doc.close();
-    }
   }
 }
 
@@ -145,7 +117,7 @@ function initMainWindow() {
   $('#toc-button').on('click', function(e) {
     if (window.matchMedia("(max-width: 600px)").matches) {
       $('.wm-toc-pane').toggleClass('wm-toc-dropdown');
-      $('#main-content').removeClass('wm-toc-hidden');
+      $('#wm-main-content').removeClass('wm-toc-hidden');
     } else {
       $('#main-content').toggleClass('wm-toc-hidden');
       closeTocDropdown();
@@ -192,7 +164,7 @@ if (mainWindow) {
   $(document).on('click', 'a', function(e) { visitUrl(this.href, e); });
 }
 
-if (is_top) {
+if (is_top_frame) {
   // Main window.
   $(document).ready(function() {
     iframeWindow = $('.wm-article')[0].contentWindow;
