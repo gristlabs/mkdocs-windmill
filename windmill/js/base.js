@@ -149,6 +149,7 @@ function initMainWindow() {
     $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
 
     closeTocDropdown();
+    iframeWindow.focus();
   });
 
   // Initialize search functionality.
@@ -204,27 +205,47 @@ function initSearch() {
     });
   });
 
-  // Search automatically and show results on keyup event.
-  searchBox.on('keyup', function(e) {
+  function showSearchResults() {
     var show = Boolean(searchBox.val());
     if (show) {
       doSearch(index, searchBox.val());
     }
     searchResults.parent().toggleClass('open', show);
+    return show;
+  }
+
+  searchBox.on('click', function(e) {
+    if (!searchResults.parent().hasClass('open')) {
+      if (showSearchResults()) {
+        e.stopPropagation();
+      }
+    }
+  });
+
+  // Search automatically and show results on keyup event.
+  searchBox.on('keyup', function(e) {
+    showSearchResults();
   });
 
   // Open the search box (and run the search) on up/down arrow keys.
   searchBox.on('keydown', function(e) {
     if (e.which === 38 || e.which === 40) {   // up or down keys
-      var show = Boolean(searchBox.val());
-      if (show) {
+      if (showSearchResults()) {
         e.stopPropagation();
-        doSearch(index, searchBox.val());
-        searchResults.parent().addClass('open');
         setTimeout(function() {
-          searchResults.find('a').get(0).focus();
+          searchResults.find('a').eq(0).focus();
           searchResults.scrollTop(0);
         }, 0);
+      }
+    }
+  });
+
+  searchResults.on('keydown', function(e) {
+    if (e.which === 38) {
+      if (searchResults.find('a').index(e.target) === 0) {
+        searchBox.focus();
+        e.stopPropagation();
+        e.preventDefault();
       }
     }
   });
