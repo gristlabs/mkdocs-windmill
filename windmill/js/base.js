@@ -1,34 +1,14 @@
-/* global window, document, $, hljs, mainWindow */
+/* global window, document, $, hljs, elasticlunr, base_url, is_top */
 "use strict";
-
-function getSearchTerm()
-{
-    var sPageURL = window.location.search.substring(1);
-    var sURLVariables = sPageURL.split('&');
-    for (var i = 0; i < sURLVariables.length; i++)
-    {
-        var sParameterName = sURLVariables[i].split('=');
-        if (sParameterName[0] == 'q')
-        {
-            return sParameterName[1];
-        }
-    }
-}
-
-// TODO
-// Change links to use top-level nav changing hash only.
-// Nothing should change iframe's src except via updateIframe()
 
 // The full page consists of a main window (top-frame.html) with navigation and table of contents,
 // and an inner iframe containing the current article. Which article is shown is determined by the
 // main window's #hash portion of the URL. In fact, we use the simple rule: main window's URL of
 // "rootUrl#relPath" corresponds to iframe's URL of "rootUrl/relPath".
 
-// Links with class 'iframe' will be automatically adjusted to do the right thing (i.e. redirect
-// the top-level page instead, to a modified hash part of the URL).
-
+var mainWindow = is_top ? window : (window.parent !== window ? window.parent : null);
 var iframeWindow = null;
-var rootUrl = getRootUrl(mainWindow.location.href);
+var rootUrl = mainWindow ? getRootUrl(mainWindow.location.href) : null;
 
 function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
@@ -40,51 +20,87 @@ function getRootUrl(url) {
   return url.replace(/[^/?#]*([?#].*)?$/, '');
 }
 
+/**
+ * Turns an absolute path to relative, stripping out rootUrl + separator.
+ */
 function getRelPath(separator, absUrl) {
   var prefix = rootUrl + (endsWith(rootUrl, separator) ? '' : separator);
   return startsWith(absUrl, prefix) ? absUrl.slice(prefix.length) : null;
 }
 
+/**
+ * Turns a relative path to absolute, adding a prefix of rootUrl + separator.
+ */
 function getAbsUrl(separator, relPath) {
   var sep = endsWith(rootUrl, separator) ? '' : separator;
   return relPath === null ? null : rootUrl + sep + relPath;
 }
 
+function stripUrlFragment(url) {
+  var hashPos = url.indexOf('#');
+  return hashPos < 0 ? url : url.slice(0, hashPos);
+}
 
+function isSameUpToFragment(url1, url2) {
+  return stripUrlFragment(url1) === stripUrlFragment(url2);
+}
 
 /**
  * Redirects the iframe to reflect the path represented by the main window's current URL.
+ * (In our design, nothing should change iframe's src except via updateIframe(), or back/forward
+ * history is likely to get messed up.)
  */
 function updateIframe(enableForwardNav) {
-  enableForward(enableForwardNav);
+  // Grey out the "forward" button if we don't expect 'forward' to work.
+  $('#hist-fwd').toggleClass('greybtn', !enableForwardNav);
 
-  var relPath = getRelPath('#', mainWindow.location.href);
-  if (!relPath) {
-    // Top page. Load iframe contents from the homepage_contents variable instead.
-    // TODO this can be done far more elegantly once theme_config is released for mkdocs if we can
-    // get the top frame generated into a separate file from the index page.
-    var doc = iframeWindow.document;
-    doc.open();
-    doc.write(mainWindow.homepage_contents);
-    doc.close();
-    return;
+  var targetRelPath = getRelPath('#', mainWindow.location.href) || '';
+  var isHomepage = false;
+  if (isSameUpToFragment(targetRelPath, '')) {
+    targetRelPath = base_url + '_homepage_.html' + targetRelPath;
+    isHomepage = true;
   }
-
+  var targetIframeUrl = getAbsUrl('/', targetRelPath);
   var loc = iframeWindow.location;
-  var iframeUrl = getAbsUrl('/', relPath);
+  var currentIframeUrl = _safeGetLocationHref(loc);
 
-  console.log("updateIframe: %s -> %s (%s)", loc.href, iframeUrl,
-    loc.href === iframeUrl ? "same" : "replacing");
+  console.log("updateIframe: %s -> %s (%s)", currentIframeUrl, targetIframeUrl,
+    currentIframeUrl === targetIframeUrl ? "same" : "replacing");
 
-  if (loc.href !== iframeUrl) {
-    loc.replace(iframeUrl);
+  if (currentIframeUrl !== targetIframeUrl) {
+    loc.replace(targetIframeUrl);
+    // TODO: There is a problem here. After visiting the "homepage" URL, the iframe's src will be
+    // set to some URL, which can't be a real one. On subsequent page reload, the browser will try
+    // to load that URL and fail. But it'll be hard for us here to know that that URL isn't
+    // loaded. In short, we really need a separate page. The next attempt is to use index.html to
+    // serve top page or homepage, using the same html file.
+    if (isHomepage && !isSameUpToFragment(targetIframeUrl, currentIframeUrl)) {
+      // Top page. Load iframe contents from the homepage_contents variable instead.
+      // TODO this can be done far more elegantly once theme_config is released for mkdocs if we can
+      // get the top frame generated into a separate file from the index page.
+      var doc = iframeWindow.document;
+      doc.open();
+      doc.write(mainWindow.homepage_contents);
+      doc.close();
+    }
   }
 }
 
-function enableForward(enable) {
-  $('#hist-fwd').toggleClass('greybtn', !enable);
+/**
+ * Returns location.href, catching exception that's triggered if the iframe is on a different domain.
+ */
+function _safeGetLocationHref(location) {
+  try {
+    return location.href;
+  } catch (e) {
+    return null;
+  }
 }
 
+/**
+ * Update the state of the button toggling table-of-contents. TOC has different behavior
+ * depending on screen size, so the button's behavior depends on that too.
+ */
 function updateTocButtonState() {
   var shown;
   if (window.matchMedia("(max-width: 600px)").matches) {
@@ -95,13 +111,20 @@ function updateTocButtonState() {
   $('#toc-button').toggleClass('active', shown);
 }
 
+/**
+ * When TOC is a dropdown (on small screens), close it.
+ */
 function closeTocDropdown() {
   $('.wm-toc-dropdown').removeClass('wm-toc-dropdown');
   updateTocButtonState();
 }
 
-function handleLinkClick(link, event) {
-  var relPath = getRelPath('/', link.href);
+/**
+ * Visit the given URL. This changes the hash of the top page to reflect the new URL's relative
+ * path, and points the iframe to the new URL.
+ */
+function visitUrl(url, event) {
+  var relPath = getRelPath('/', url);
   if (relPath) {
     event.preventDefault();
     var newUrl = getAbsUrl('#', relPath);
@@ -113,24 +136,10 @@ function handleLinkClick(link, event) {
   }
 }
 
+/**
+ * Initialize the main window.
+ */
 function initMainWindow() {
-  var search_term = getSearchTerm(),
-      $search_modal = $('#mkdocs_search_modal');
-
-  if(search_term){
-    $search_modal.modal();
-  }
-
-  // make sure search input gets autofocus everytime modal opens.
-  $search_modal.on('shown.bs.modal', function () {
-    $search_modal.find('#mkdocs-search-query').focus();
-  });
-
-  // Highlight.js
-  hljs.initHighlightingOnLoad();
-  $('table').addClass('table table-striped table-hover');
-
-
   // toc-button either opens the table of contents in the side-pane, or (on smaller screens) shows
   // the side-pane as a drop-down.
   $('#toc-button').on('click', function(e) {
@@ -170,19 +179,172 @@ function initMainWindow() {
     closeTocDropdown();
   });
 
+  // Initialize search functionality.
+  initSearch();
+
   // Load the iframe now, and whenever we navigate the top frame.
-  updateIframe(false);
+  setTimeout(function() { updateIframe(false); }, 0);
   $(window).on('popstate', function() { updateIframe(true); });
 }
 
-// Initialize links that should load into the iframe.
-$(document).on('click', 'a', function(e) { handleLinkClick(this, e); });
+// Link clicks get intercepted to call visitUrl (except rendering an article without an iframe).
+if (mainWindow) {
+  $(document).on('click', 'a', function(e) { visitUrl(this.href, e); });
+}
 
-if (window === mainWindow) {
+if (is_top) {
+  // Main window.
   $(document).ready(function() {
     iframeWindow = $('.wm-article')[0].contentWindow;
     initMainWindow();
   });
+
 } else {
+  // Article contents.
   iframeWindow = window;
+
+  // Other initialization of iframe contents.
+  hljs.initHighlightingOnLoad();
+  $('table').addClass('table table-striped table-hover');
 }
+
+
+/**
+ * Initialize search functionality.
+ */
+function initSearch() {
+  // Create elasticlunr index.
+  var index = elasticlunr(function() {
+    this.setRef('location');
+    this.addField('title');
+    this.addField('text');
+  });
+
+  var searchBox = $('#mkdocs-search-query');
+  var searchResults = $('#mkdocs-search-results');
+
+  // Fetch the prebuilt index data, and add to the index.
+  $.getJSON(base_url + '/mkdocs/search_index.json')
+  .done(function(data) {
+    data.docs.forEach(function(doc) {
+      doc.location = base_url + doc.location;
+      index.addDoc(doc);
+    });
+  });
+
+  // Search automatically and show results on keyup event.
+  searchBox.on('keyup', function(e) {
+    var show = Boolean(searchBox.val());
+    if (show) {
+      doSearch(index, searchBox.val());
+    }
+    searchResults.parent().toggleClass('open', show);
+  });
+
+  // Open the search box (and run the search) on up/down arrow keys.
+  searchBox.on('keydown', function(e) {
+    if (e.which === 38 || e.which === 40) {   // up or down keys
+      var show = Boolean(searchBox.val());
+      if (show) {
+        e.stopPropagation();
+        doSearch(index, searchBox.val());
+        searchResults.parent().addClass('open');
+        setTimeout(function() {
+          searchResults.find('a').get(0).focus();
+          searchResults.scrollTop(0);
+        }, 0);
+      }
+    }
+  });
+
+  // Redirect to the search page on Enter or button-click (form submit).
+  $('#search-form').on('submit', function(e) {
+    var url = this.action + '?' + $(this).serialize();
+    console.log("URL is", url);
+    visitUrl(url, e);
+  });
+}
+
+function escapeRegex(s) {
+  return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+/**
+ * This helps construct useful snippets to show in search results, and highlight matches.
+ */
+function SnippetBuilder(query) {
+  var termsPattern = elasticlunr.tokenizer(query).map(escapeRegex).join("|");
+  this._termsRegex = termsPattern ? new RegExp(termsPattern, "gi") : null;
+}
+
+SnippetBuilder.prototype.getSnippet = function(text, len) {
+  if (!this._termsRegex) {
+    return text.slice(0, len);
+  }
+
+  // Find a position that includes something we searched for.
+  var pos = text.search(this._termsRegex);
+  if (pos < 0) { pos = 0; }
+
+  // Find a period before that position (a good starting point).
+  var start = text.lastIndexOf('.', pos) + 1;
+  if (pos - start > 30) {
+    // If too long to previous period, give it 30 characters, and find a space before that.
+    start = text.lastIndexOf(' ', pos - 30) + 1;
+  }
+  var rawSnippet = text.slice(start, start + len);
+  return rawSnippet.replace(this._termsRegex, '<b>$&</b>');
+};
+
+
+/**
+ * Search the elasticlunr index for the given query, and populate the dropdown with results.
+ */
+function doSearch(index, query) {
+  var resultsElem = $('#mkdocs-search-results');
+  resultsElem.empty();
+
+  if (query === '') { return; }
+
+  var results = index.search(query, { fields: { title: {boost: 10}, text: { boost: 1 } }, expand: true, bool: "AND" });
+  var snippetBuilder = new SnippetBuilder(query);
+  if (results.length > 0){
+    results.forEach(function(result) {
+      var doc = index.documentStore.getDoc(result.ref);
+      var snippet = snippetBuilder.getSnippet(doc.text, 100);
+
+      resultsElem.append(
+        $('<li>').append($('<a class="search-link">').attr('href', doc.location)
+          .append($('<div class="search-title">').text(doc.title))
+          .append($('<div class="search-text">').html(snippet)))
+      );
+    });
+  } else {
+    $('<li>No results found</li>').appendTo(resultsElem);
+  }
+}
+
+// TODO: There is a problem clicking a link that takes you to /#foo (i.e. anchor within index
+// page, when index page isn't the one loaded).
+
+  /*
+   * TODO not needed for dropdown, and index isn't ready.
+
+// Returns the value of the 'q' parameter in the URL's query portion.
+function _getSearchTerm() {
+  var params = window.location.search.substring(1).split('&');
+  for (var i = 0; i < params.length; i++) {
+    var param = params[i].split('=');
+    if (param[0] === 'q') {
+      return decodeURIComponent(param[1].replace(/\+/g, '%20'));
+    }
+  }
+}
+
+   var term = _getSearchTerm();
+    if (term) {
+      searchBox.val(term);
+      search(index, documents, term);
+    }
+  */
+

@@ -18,7 +18,7 @@ if [[ ! -x "$MKDOCS" ]]; then
   exit 2
 fi
 
-( cd test/mkdocs && $MKDOCS build -s -c -e ../../windmill -d outputs )
+( cd test/mkdocs && $MKDOCS build -s -c -d outputs )
 
 
 if [[ "$1" = "run" ]]; then
@@ -32,7 +32,7 @@ if [[ "$1" = "run" ]]; then
   fi
 
 
-  $NODE_BIN/static -p $PORT test/mkdocs/outputs/ &
+  $NODE_BIN/static -p $PORT -c false test/mkdocs/outputs/ &
   echo "Starting server PID $!"
 
   $NODE_BIN/chokidar windmill/ test/mkdocs/mkdocs.yml test/mkdocs/docs/ -c './build' &

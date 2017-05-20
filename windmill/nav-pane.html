@@ -1,0 +1,12 @@
+{# Side-pane with table of contents #}
+<nav class="wm-toc-pane">
+  {%- block site_nav %}
+  <ul class="wm-toctree">
+    {%- set navlevel = 1 %}
+    {%- for nav_item in nav %}
+        {% include 'nav-item.html' %}
+    {%- endfor %}
+  </ul>
+  {%- endblock %}
+</nav>
+

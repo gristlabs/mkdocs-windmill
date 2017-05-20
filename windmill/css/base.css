@@ -254,6 +254,54 @@ body {
 }
 
 /***********************************************************************
+ * Dropdown search results
+ ***********************************************************************/
+#mkdocs-search-results {
+  width: 40rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  white-space: normal;
+  max-height: calc(100vh - 90px);
+  max-width: 90vw;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif,FontAwesome;
+}
+
+#mkdocs-search-results h3 {
+  display: inline;
+  font-size: 1.5rem;
+  font-weight: bold;
+  padding: 0;
+  margin: 0;
+  margin-right: 1rem;
+}
+
+#mkdocs-search-results p {
+  font-size: 1.2rem;
+  padding: 0;
+  margin: 0 0 1rem 0;
+}
+
+.search-link {
+  font-size: 1.2rem;
+}
+
+.search-title {
+  font-weight: bold;
+  color: #337ab7;
+  padding-right: 1rem;
+}
+
+.search-text {
+  color: #666;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.search-text > b {
+  color: #000;
+}
+
+/***********************************************************************
  * The rest is taken from base.css from mkdocs.
  ***********************************************************************/
 

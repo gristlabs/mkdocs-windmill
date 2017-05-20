@@ -34,8 +34,8 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
 
-    <script src="{{ base_url }}/js/jquery-3.2.1.slim.min.js"></script>
-    <script src="{{ base_url }}/js/bootstrap-3.3.7.min.js"></script>
+    <script src="{{ base_url }}/js/jquery-3.2.1.slim.js"></script>
+    <script src="{{ base_url }}/js/bootstrap-3.3.7.js"></script>
     <script src="{{ base_url }}/js/highlight.pack.js"></script>
   {%- endblock %}
 
@@ -91,12 +91,17 @@
           </div>
         </div>
         <div class="wm-top-tool">
-          <div class="input-group input-group-sm wm-top-search">
-            <input type="text" class="form-control" placeholder="Search">
-            <span class="input-group-btn" role="search">
-              <button class="btn btn-default" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
-            </span>
-          </div>
+          <form class="dropdown" id="search-form" action="/search.html">
+            <div class="input-group input-group-sm wm-top-search">
+              <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
+              <span class="input-group-btn" role="search">
+                <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+                {# This button is hidden, but exists because an element with data-toggle attr is relied on by bootstrap. #}
+                <button class="btn btn-default collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
+                <div id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right"></div>
+              </span>
+            </div>
+          </form>
         </div>
       </div>
     </div>
