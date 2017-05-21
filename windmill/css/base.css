@@ -260,29 +260,17 @@ body {
 /***********************************************************************
  * Dropdown search results
  ***********************************************************************/
-#mkdocs-search-results {
+#mkdocs-search-results.dropdown-menu {
   width: 40rem;
   overflow-y: auto;
   overflow-x: hidden;
   white-space: normal;
   max-height: calc(100vh - 60px);
   max-width: 90vw;
+}
+
+#mkdocs-search-results {
   font-family: "Helvetica Neue",Helvetica,Arial,sans-serif,FontAwesome;
-}
-
-#mkdocs-search-results h3 {
-  display: inline;
-  font-size: 1.5rem;
-  font-weight: bold;
-  padding: 0;
-  margin: 0;
-  margin-right: 1rem;
-}
-
-#mkdocs-search-results p {
-  font-size: 1.2rem;
-  padding: 0;
-  margin: 0 0 1rem 0;
 }
 
 .search-link {
@@ -304,6 +292,30 @@ body {
 .search-text > b {
   color: #000;
 }
+
+.wm-search-page {
+  list-style: none;
+  padding: 5px 0;
+}
+
+.wm-search-page > li {
+  padding: 1rem 0;
+  border-bottom: 1px solid #ccc;
+}
+
+.wm-search-page .search-link {
+  font-size: inherit;
+}
+
+.wm-search-page .search-link:hover, .wm-search-page .search-link:active {
+  text-decoration: none;
+}
+
+.wm-search-page .search-link:hover .search-title {
+  text-decoration: underline;
+}
+
+
 
 /***********************************************************************
  * The rest is taken from base.css from mkdocs.

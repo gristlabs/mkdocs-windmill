@@ -1,4 +1,5 @@
 /* global window, document, $, hljs, elasticlunr, base_url, is_top_frame */
+/* exported getParam */
 "use strict";
 
 // The full page consists of a main window (top-frame.html) with navigation and table of contents,
@@ -9,6 +10,14 @@
 var mainWindow = is_top_frame ? window : (window.parent !== window ? window.parent : null);
 var iframeWindow = null;
 var rootUrl = mainWindow ? getRootUrl(mainWindow.location.href) : null;
+var searchIndex = null;
+
+var Keys = {
+  ENTER:  13,
+  ESCAPE: 27,
+  UP:     38,
+  DOWN:   40,
+};
 
 function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
@@ -66,6 +75,19 @@ function _safeGetLocationHref(location) {
     return location.href;
   } catch (e) {
     return null;
+  }
+}
+
+/**
+ * Returns the value of the given parameter in the URL's query portion.
+ */
+function getParam(key) {
+  var params = window.location.search.substring(1).split('&');
+  for (var i = 0; i < params.length; i++) {
+    var param = params[i].split('=');
+    if (param[0] === key) {
+      return decodeURIComponent(param[1].replace(/\+/g, '%20'));
+    }
   }
 }
 
@@ -187,7 +209,7 @@ if (is_top_frame) {
  */
 function initSearch() {
   // Create elasticlunr index.
-  var index = elasticlunr(function() {
+  searchIndex = elasticlunr(function() {
     this.setRef('location');
     this.addField('title');
     this.addField('text');
@@ -201,14 +223,19 @@ function initSearch() {
   .done(function(data) {
     data.docs.forEach(function(doc) {
       doc.location = base_url + doc.location;
-      index.addDoc(doc);
+      searchIndex.addDoc(doc);
     });
   });
 
-  function showSearchResults() {
-    var show = Boolean(searchBox.val());
+  function showSearchResults(optShow) {
+    var show = (optShow === false ? false : Boolean(searchBox.val()));
     if (show) {
-      doSearch(index, searchBox.val());
+      doSearch({
+        resultsElem: searchResults,
+        query: searchBox.val(),
+        snippetLen: 100,
+        limit: 10
+      });
     }
     searchResults.parent().toggleClass('open', show);
     return show;
@@ -224,25 +251,26 @@ function initSearch() {
 
   // Search automatically and show results on keyup event.
   searchBox.on('keyup', function(e) {
-    showSearchResults();
+    var show = (e.which !== Keys.ESCAPE && e.which !== Keys.ENTER);
+    showSearchResults(show);
   });
 
   // Open the search box (and run the search) on up/down arrow keys.
   searchBox.on('keydown', function(e) {
-    if (e.which === 38 || e.which === 40) {   // up or down keys
+    if (e.which === Keys.UP || e.which === Keys.DOWN) {
       if (showSearchResults()) {
         e.stopPropagation();
+        e.preventDefault();
         setTimeout(function() {
-          searchResults.find('a').eq(0).focus();
-          searchResults.scrollTop(0);
+          searchResults.find('a').eq(e.which === Keys.UP ? -1 : 0).focus();
         }, 0);
       }
     }
   });
 
   searchResults.on('keydown', function(e) {
-    if (e.which === 38) {
-      if (searchResults.find('a').index(e.target) === 0) {
+    if (e.which === Keys.UP || e.which === Keys.DOWN) {
+      if (searchResults.find('a').eq(e.which === Keys.UP ? 0 : -1)[0] === e.target) {
         searchBox.focus();
         e.stopPropagation();
         e.preventDefault();
@@ -250,11 +278,18 @@ function initSearch() {
     }
   });
 
+  $(searchResults).on('click', '.search-all', function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+    $('#search-form').trigger('submit');
+  });
+
   // Redirect to the search page on Enter or button-click (form submit).
   $('#search-form').on('submit', function(e) {
     var url = this.action + '?' + $(this).serialize();
     console.log("URL is", url);
     visitUrl(url, e);
+    searchResults.parent().removeClass('open');
   });
 }
 
@@ -289,31 +324,47 @@ SnippetBuilder.prototype.getSnippet = function(text, len) {
   return rawSnippet.replace(this._termsRegex, '<b>$&</b>');
 };
 
-
 /**
  * Search the elasticlunr index for the given query, and populate the dropdown with results.
  */
-function doSearch(index, query) {
-  var resultsElem = $('#mkdocs-search-results');
+// TODO: it should know the index?
+function doSearch(options) {
+  var resultsElem = options.resultsElem;
+  var query = options.query;
+  var snippetLen = options.snippetLen;
+  var limit = options.limit;
+
   resultsElem.empty();
 
   if (query === '') { return; }
 
-  var results = index.search(query, { fields: { title: {boost: 10}, text: { boost: 1 } }, expand: true, bool: "AND" });
+  var results = searchIndex.search(query, {
+    fields: { title: {boost: 10}, text: { boost: 1 } },
+    expand: true,
+    bool: "AND"
+  });
+
   var snippetBuilder = new SnippetBuilder(query);
   if (results.length > 0){
-    results.forEach(function(result) {
-      var doc = index.documentStore.getDoc(result.ref);
-      var snippet = snippetBuilder.getSnippet(doc.text, 100);
+    var len = Math.min(results.length, limit || Infinity);
+    for (var i = 0; i < len; i++) {
+      var doc = searchIndex.documentStore.getDoc(results[i].ref);
+      var snippet = snippetBuilder.getSnippet(doc.text, snippetLen);
 
       resultsElem.append(
         $('<li>').append($('<a class="search-link">').attr('href', doc.location)
           .append($('<div class="search-title">').text(doc.title))
           .append($('<div class="search-text">').html(snippet)))
       );
-    });
+    }
+    resultsElem.append($('<li role="separator" class="divider"></li>'));
+    if (limit) {
+      resultsElem.append($(
+        '<li><a class="search-link search-all" href="/search.html">' +
+        '<div class="search-title">SEE ALL RESULTS</div></a></li>'));
+    }
   } else {
-    $('<li>No results found</li>').appendTo(resultsElem);
+    resultsElem.append($('<li class="disabled"><a class="search-link">NO RESULTS FOUND</a></li>'));
   }
 }
 
