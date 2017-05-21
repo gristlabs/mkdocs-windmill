@@ -162,6 +162,7 @@ body {
 .wm-toc-lev3 > .wm-toc-text { padding-left: 42px; }
 
 .wm-toc-li-nested {
+  display: none;
   padding: 0px;
   margin: 0px;
 }
@@ -176,10 +177,6 @@ body {
 
 .wm-toc-opener.open > .wm-toc-text::before {
   content: "\25BC";
-}
-
-.wm-toc-li-nested {
-  display: none;
 }
 
 .wm-toc-li.open + .wm-toc-li-nested {
@@ -197,6 +194,22 @@ body {
 
 .wm-toc-li.current a {
   color: white;
+}
+
+.wm-toc-li-nested.wm-page-toc {
+  display: block;
+  font-size: 1.2rem;
+  line-height: 1.2rem;
+}
+
+.wm-page-toc-text {
+  padding: 2px 2px 2px 56px;
+  display: block;
+  cursor: pointer;
+}
+
+.wm-page-toc-text::before {
+  content: '# ';
 }
 
 

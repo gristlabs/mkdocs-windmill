@@ -49,6 +49,21 @@
     <script>
       var base_url = '{{ base_url }}';
       var is_top_frame = {% if is_top %}(window === window.parent){% else %}false{% endif %};
+      {%- if page %}
+        {# Include the first two levels of TOC data as a JS object, to be rendered in top frame #}
+        var pageToc = [
+        {%- for item in page.toc %}
+          {title: {{ item.title|tojson }}, url: {{ item.url|tojson }}, children: [
+            {%- for item in item.children %}
+              {title: {{ item.title|tojson }}, url: {{ item.url|tojson }} },
+            {%- endfor %}
+          ]},
+        {%- endfor %}
+        ];
+      {%- else %}
+        var page_toc = null;
+      {%- endif %}
+
     </script>
     <script src="{{ base_url }}/js/base.js"></script>
     {%- for path in extra_javascript %}

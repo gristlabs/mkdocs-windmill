@@ -119,7 +119,7 @@ function closeTocDropdown() {
  */
 function visitUrl(url, event) {
   var relPath = getRelPath('/', url);
-  if (relPath) {
+  if (relPath !== null) {
     event.preventDefault();
     var newUrl = getAbsUrl('#', relPath);
     console.log("newUrl %s, mainWindow href %s", newUrl, mainWindow.location.href);
@@ -128,6 +128,10 @@ function visitUrl(url, event) {
       updateIframe(false);
     }
   }
+}
+
+function stripUrlPath(relUrl) {
+  return relUrl.replace(/[#?].*/, '');
 }
 
 /**
@@ -165,10 +169,14 @@ function initMainWindow() {
   $('.wm-article').on('load', function() {
     $('.current').removeClass('current');
 
-    var relPath = getRelPath('/', iframeWindow.location.href);
+    var relPath = stripUrlPath(getRelPath('/', iframeWindow.location.href) || ".");
     var selector = '.wm-article-link[href="' + relPath + '"]';
     $(selector).closest('.wm-toc-li').addClass('current');
     $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
+
+    if (iframeWindow.pageToc) {
+      renderPageToc($(selector).closest('.wm-toc-li'), relPath, iframeWindow.pageToc);
+    }
 
     closeTocDropdown();
     iframeWindow.focus();
@@ -180,6 +188,25 @@ function initMainWindow() {
   // Load the iframe now, and whenever we navigate the top frame.
   setTimeout(function() { updateIframe(false); }, 0);
   $(window).on('popstate', function() { updateIframe(true); });
+}
+
+// TODO:
+// It would be nicer to turn page link into a toggle when active and page toc shown.
+// (can't decide if a triangle is desirable)
+
+function renderPageToc(parentElem, pageUrl, pageToc) {
+  var ul = $('<ul class="wm-toctree">');
+  function addItem(tocItem) {
+    ul.append($('<li class="wm-toc-li">')
+      .append($('<a class="wm-article-link wm-page-toc-text">')
+        .attr('href', pageUrl + tocItem.url).text(tocItem.title)));
+    if (tocItem.children) {
+      tocItem.children.forEach(addItem);
+    }
+  }
+  pageToc.forEach(addItem);
+  $('.wm-page-toc').remove();
+  parentElem.after($('<li class="wm-page-toc wm-toc-li-nested">').append(ul));
 }
 
 // Link clicks get intercepted to call visitUrl (except rendering an article without an iframe).
@@ -287,7 +314,6 @@ function initSearch() {
   // Redirect to the search page on Enter or button-click (form submit).
   $('#search-form').on('submit', function(e) {
     var url = this.action + '?' + $(this).serialize();
-    console.log("URL is", url);
     visitUrl(url, e);
     searchResults.parent().removeClass('open');
   });
