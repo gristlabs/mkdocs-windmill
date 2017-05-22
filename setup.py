@@ -14,7 +14,7 @@ setup(
     include_package_data=True,
     entry_points={
         'mkdocs.themes': [
-            'windmill = windmill',
+            'windmill = mkdocs_windmill',
         ]
     },
     zip_safe=False

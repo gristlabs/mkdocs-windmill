@@ -5,7 +5,7 @@ site_author: MkDocs Team
 
 repo_url: https://github.com/mkdocs/mkdocs/
 
-theme_dir: ../../windmill
+theme_dir: ../../mkdocs_windmill
 
 pages:
 - Home: index.md
