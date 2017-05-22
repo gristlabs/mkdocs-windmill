@@ -232,6 +232,8 @@ if (is_top_frame) {
   $('table').addClass('table table-striped table-hover');
 }
 
+var searchIndexReady = false;
+
 
 /**
  * Initialize search functionality.
@@ -254,6 +256,8 @@ function initSearch() {
       doc.location = base_url + doc.location;
       searchIndex.addDoc(doc);
     });
+    searchIndexReady = true;
+    $(document).trigger('searchIndexReady');
   });
 
   function showSearchResults(optShow) {
@@ -357,11 +361,18 @@ SnippetBuilder.prototype.getSnippet = function(text, len) {
  */
 function doSearch(options) {
   var resultsElem = options.resultsElem;
+  resultsElem.empty();
+
+  // If the index isn't ready, wait for it, and search again when ready.
+  if (!searchIndexReady) {
+    resultsElem.append($('<li class="disabled"><a class="search-link">SEARCHING...</a></li>'));
+    $(document).one('searchIndexReady', function() { doSearch(options); });
+    return;
+  }
+
   var query = options.query;
   var snippetLen = options.snippetLen;
   var limit = options.limit;
-
-  resultsElem.empty();
 
   if (query === '') { return; }
 
@@ -384,8 +395,8 @@ function doSearch(options) {
           .append($('<div class="search-text">').html(snippet)))
       );
     }
-    resultsElem.append($('<li role="separator" class="divider"></li>'));
     if (limit) {
+      resultsElem.append($('<li role="separator" class="divider"></li>'));
       resultsElem.append($(
         '<li><a class="search-link search-all" href="/search.html">' +
         '<div class="search-title">SEE ALL RESULTS</div></a></li>'));

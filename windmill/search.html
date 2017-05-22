@@ -8,13 +8,11 @@
   </ul>
 
   <script>
-  // TODO Test behavior if index takes a while to load.
-
-  window.top.doSearch({
-    resultsElem: $('#mkdocs-search-results'),
-    query: getParam('q'),
-    snippetLen: 200,
-    limit: 0
-  });
+    window.top.doSearch({
+      resultsElem: $('#mkdocs-search-results'),
+      query: getParam('q'),
+      snippetLen: 200,
+      limit: 0
+    });
   </script>
 {% endblock %}
