@@ -260,6 +260,10 @@ body {
   margin: 20px auto 30px auto;
 }
 
+.wm-page-content a {
+  color: #2fa4e7;
+}
+
 .wm-article-nav {
   display: inline-block;
   max-width: 48%;

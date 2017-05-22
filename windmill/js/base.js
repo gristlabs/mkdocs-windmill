@@ -127,6 +127,8 @@ function visitUrl(url, event) {
       mainWindow.history.pushState(null, '', newUrl);
       updateIframe(false);
     }
+    closeTocDropdown();
+    iframeWindow.focus();
   }
 }
 
