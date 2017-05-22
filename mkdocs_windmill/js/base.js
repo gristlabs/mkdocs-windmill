@@ -2,14 +2,18 @@
 /* exported getParam */
 "use strict";
 
-// The full page consists of a main window (top-frame.html) with navigation and table of contents,
-// and an inner iframe containing the current article. Which article is shown is determined by the
-// main window's #hash portion of the URL. In fact, we use the simple rule: main window's URL of
+// The full page consists of a main window with navigation and table of contents, and an inner
+// iframe containing the current article. Which article is shown is determined by the main
+// window's #hash portion of the URL. In fact, we use the simple rule: main window's URL of
 // "rootUrl#relPath" corresponds to iframe's URL of "rootUrl/relPath".
+//
+// The main frame and the contents of the index page actually live in a single generated html
+// file: the outer frame hides one half, and the inner hides the other. TODO: this should be
+// possible to greatly simplify after mkdocs-1.0 release.
 
 var mainWindow = is_top_frame ? window : (window.parent !== window ? window.parent : null);
 var iframeWindow = null;
-var rootUrl = mainWindow ? getRootUrl(mainWindow.location.href) : null;
+var rootUrl = qualifyUrl(base_url);
 var searchIndex = null;
 
 var Keys = {
@@ -23,10 +27,12 @@ function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
 
 /**
- * Returns the portion of the given URL ending at the last slash before the first '#' or '?' sign.
+ * Given a relative URL, returns the absolute one, relying on the browser to convert it.
  */
-function getRootUrl(url) {
-  return url.replace(/[^/?#]*([?#].*)?$/, '');
+function qualifyUrl(url) {
+  var a = document.createElement('a');
+  a.href = url;
+  return a.href;
 }
 
 /**
@@ -122,7 +128,6 @@ function visitUrl(url, event) {
   if (relPath !== null) {
     event.preventDefault();
     var newUrl = getAbsUrl('#', relPath);
-    console.log("newUrl %s, mainWindow href %s", newUrl, mainWindow.location.href);
     if (newUrl !== mainWindow.location.href) {
       mainWindow.history.pushState(null, '', newUrl);
       updateIframe(false);
@@ -132,7 +137,25 @@ function visitUrl(url, event) {
   }
 }
 
-function stripUrlPath(relUrl) {
+/**
+ * Adjusts link to point to a top page, converting URL from "base/path" to "base#path". It also
+ * sets a data-adjusted attribute on the link, to skip adjustments on future clicks.
+ */
+function adjustLink(linkEl) {
+  if (!linkEl.hasAttribute('data-wm-adjusted')) {
+    linkEl.setAttribute('data-wm-adjusted', 'done');
+    var relPath = getRelPath('/', linkEl.href);
+    if (relPath !== null) {
+      var newUrl = getAbsUrl('#', relPath);
+      linkEl.href = newUrl;
+    }
+  }
+}
+
+/**
+ * Given a URL, strips query and fragment, returning just the path.
+ */
+function cleanUrlPath(relUrl) {
   return relUrl.replace(/[#?].*/, '');
 }
 
@@ -175,7 +198,7 @@ function initMainWindow() {
     document.title = iframeWindow.document.title;
     $('.wm-current').removeClass('wm-current wm-page-toc-opener wm-page-toc-closed');
 
-    var relPath = stripUrlPath(getRelPath('/', iframeWindow.location.href) || ".");
+    var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(iframeWindow.location.href)));
     var selector = '.wm-article-link[href="' + relPath + '"]';
     $(selector).closest('.wm-toc-li').addClass('wm-current');
     $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
@@ -202,7 +225,9 @@ function renderPageToc(parentElem, pageUrl, pageToc) {
   function addItem(tocItem) {
     ul.append($('<li class="wm-toc-li">')
       .append($('<a class="wm-article-link wm-page-toc-text">')
-        .attr('href', pageUrl + tocItem.url).text(tocItem.title)));
+        .attr('href', pageUrl + tocItem.url)
+        .attr('data-wm-adjusted', 'done')
+        .text(tocItem.title)));
     if (tocItem.children) {
       tocItem.children.forEach(addItem);
     }
@@ -213,11 +238,6 @@ function renderPageToc(parentElem, pageUrl, pageToc) {
   parentElem.after($('<li class="wm-page-toc wm-toc-li-nested">').append(ul));
 }
 
-
-// Link clicks get intercepted to call visitUrl (except rendering an article without an iframe).
-if (mainWindow) {
-  $(document).on('click', 'a', function(e) { visitUrl(this.href, e); });
-}
 
 if (is_top_frame) {
   // Main window.
@@ -234,6 +254,25 @@ if (is_top_frame) {
   hljs.initHighlightingOnLoad();
   $('table').addClass('table table-striped table-hover');
 }
+
+
+if (!mainWindow) {
+  // This is a page that ought to be in an iframe. Redirect to load the top page instead.
+  var topUrl = getAbsUrl('#', getRelPath('/', window.location.href));
+  if (topUrl) {
+    window.location.href = topUrl;
+  }
+
+} else {
+  // Adjust all links to point to the top page with the right hash fragment.
+  $(document).ready(function() {
+    $('a').each(function() { adjustLink(this); });
+  });
+
+  // For any dynamically-created links, adjust them on click.
+  $(document).on('click', 'a:not([data-wm-adjusted])', function(e) { adjustLink(this); });
+}
+
 
 var searchIndexReady = false;
 
@@ -401,7 +440,7 @@ function doSearch(options) {
     if (limit) {
       resultsElem.append($('<li role="separator" class="divider"></li>'));
       resultsElem.append($(
-        '<li><a class="search-link search-all" href="/search.html">' +
+        '<li><a class="search-link search-all" href="' + base_url + '/search.html">' +
         '<div class="search-title">SEE ALL RESULTS</div></a></li>'));
     }
   } else {
