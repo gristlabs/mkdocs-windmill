@@ -172,6 +172,7 @@ function initMainWindow() {
 
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
+    document.title = iframeWindow.document.title;
     $('.wm-current').removeClass('wm-current wm-page-toc-opener wm-page-toc-closed');
 
     var relPath = stripUrlPath(getRelPath('/', iframeWindow.location.href) || ".");
