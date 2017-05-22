@@ -183,7 +183,7 @@ body {
   display: block;
 }
 
-.wm-toc-li.current, .wm-toc-li.current:hover {
+.wm-toc-li.wm-current, .wm-toc-li.wm-current:hover {
   background-color: #546e7a;
   color: white;
 }
@@ -192,8 +192,9 @@ body {
   background-color: #e0e0e0;
 }
 
-.wm-toc-li.current a {
+.wm-toc-li.wm-current a {
   color: white;
+  pointer-events: none;
 }
 
 .wm-toc-li-nested.wm-page-toc {
@@ -202,16 +203,27 @@ body {
   line-height: 1.2rem;
 }
 
+.wm-page-toc-opener.wm-page-toc-closed + .wm-page-toc {
+  display: none;
+}
+
+.wm-page-toc-opener > .wm-toc-text::after {
+  content: "\25BC";
+  display: inline-block;
+  float: right;
+  vertical-align: middle;
+  font-size: 8px;
+}
+
+.wm-page-toc-closed.wm-page-toc-closed > .wm-toc-text::after {
+  content: "\25C4";
+}
+
 .wm-page-toc-text {
   padding: 2px 2px 2px 56px;
   display: block;
   cursor: pointer;
 }
-
-.wm-page-toc-text::before {
-  content: '# ';
-}
-
 
 .wm-article {
   width: 100%;

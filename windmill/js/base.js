@@ -164,14 +164,17 @@ function initMainWindow() {
 
   // When we click on an opener in the table of contents, open it.
   $('.wm-toc-pane').on('click', '.wm-toc-opener', function(e) { $(this).toggleClass('open'); });
+  $('.wm-toc-pane').on('click', '.wm-current', function(e) {
+    $(this).toggleClass('wm-page-toc-closed');
+  });
 
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
-    $('.current').removeClass('current');
+    $('.wm-current').removeClass('wm-current wm-page-toc-opener wm-page-toc-closed');
 
     var relPath = stripUrlPath(getRelPath('/', iframeWindow.location.href) || ".");
     var selector = '.wm-article-link[href="' + relPath + '"]';
-    $(selector).closest('.wm-toc-li').addClass('current');
+    $(selector).closest('.wm-toc-li').addClass('wm-current');
     $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
 
     if (iframeWindow.pageToc) {
@@ -190,9 +193,6 @@ function initMainWindow() {
   $(window).on('popstate', function() { updateIframe(true); });
 }
 
-// TODO:
-// It would be nicer to turn page link into a toggle when active and page toc shown.
-// (can't decide if a triangle is desirable)
 
 function renderPageToc(parentElem, pageUrl, pageToc) {
   var ul = $('<ul class="wm-toctree">');
@@ -205,9 +205,11 @@ function renderPageToc(parentElem, pageUrl, pageToc) {
     }
   }
   pageToc.forEach(addItem);
+  parentElem.addClass('wm-page-toc-opener');
   $('.wm-page-toc').remove();
   parentElem.after($('<li class="wm-page-toc wm-toc-li-nested">').append(ul));
 }
+
 
 // Link clicks get intercepted to call visitUrl (except rendering an article without an iframe).
 if (mainWindow) {
@@ -353,7 +355,6 @@ SnippetBuilder.prototype.getSnippet = function(text, len) {
 /**
  * Search the elasticlunr index for the given query, and populate the dropdown with results.
  */
-// TODO: it should know the index?
 function doSearch(options) {
   var resultsElem = options.resultsElem;
   var query = options.query;
@@ -393,28 +394,3 @@ function doSearch(options) {
     resultsElem.append($('<li class="disabled"><a class="search-link">NO RESULTS FOUND</a></li>'));
   }
 }
-
-// TODO: There is a problem clicking a link that takes you to /#foo (i.e. anchor within index
-// page, when index page isn't the one loaded).
-
-  /*
-   * TODO not needed for dropdown, and index isn't ready.
-
-// Returns the value of the 'q' parameter in the URL's query portion.
-function _getSearchTerm() {
-  var params = window.location.search.substring(1).split('&');
-  for (var i = 0; i < params.length; i++) {
-    var param = params[i].split('=');
-    if (param[0] === 'q') {
-      return decodeURIComponent(param[1].replace(/\+/g, '%20'));
-    }
-  }
-}
-
-   var term = _getSearchTerm();
-    if (term) {
-      searchBox.val(term);
-      search(index, documents, term);
-    }
-  */
-
