@@ -1,5 +1,5 @@
 /* global window, document, $, hljs, elasticlunr, base_url, is_top_frame */
-/* exported getParam */
+/* exported getParam, onIframeLoad */
 "use strict";
 
 // The full page consists of a main window with navigation and table of contents, and an inner
@@ -70,6 +70,8 @@ function updateIframe(enableForwardNav) {
 
   if (currentIframeUrl !== targetIframeUrl) {
     loc.replace(targetIframeUrl);
+    highlightCurrentUrl(targetIframeUrl);
+    closeTocDropdown();
   }
 }
 
@@ -196,19 +198,6 @@ function initMainWindow() {
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
     document.title = iframeWindow.document.title;
-    $('.wm-current').removeClass('wm-current wm-page-toc-opener wm-page-toc-closed');
-
-    var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(iframeWindow.location.href)));
-    var selector = '.wm-article-link[href="' + relPath + '"]';
-    $(selector).closest('.wm-toc-li').addClass('wm-current');
-    $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
-
-    if (iframeWindow.pageToc) {
-      renderPageToc($(selector).closest('.wm-toc-li'), relPath, iframeWindow.pageToc);
-    }
-
-    closeTocDropdown();
-    iframeWindow.focus();
   });
 
   // Initialize search functionality.
@@ -219,6 +208,27 @@ function initMainWindow() {
   $(window).on('popstate', function() { updateIframe(true); });
 }
 
+function highlightCurrentUrl(url) {
+  $('.wm-current').removeClass('wm-current');
+
+  var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(url)));
+  var selector = '.wm-article-link[href="' + relPath + '"]';
+  $(selector).closest('.wm-toc-li').addClass('wm-current');
+  $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
+  return relPath;
+}
+
+function onIframeLoad() {
+  var relPath = highlightCurrentUrl(iframeWindow.location.href);
+
+  $('.wm-current').removeClass('wm-page-toc-opener wm-page-toc-closed');
+  if (iframeWindow.pageToc) {
+    var selector = '.wm-article-link[href="' + relPath + '"]';
+    renderPageToc($(selector).closest('.wm-toc-li'), relPath, iframeWindow.pageToc);
+  }
+  closeTocDropdown();
+  iframeWindow.focus();
+}
 
 function renderPageToc(parentElem, pageUrl, pageToc) {
   var ul = $('<ul class="wm-toctree">');
@@ -249,6 +259,7 @@ if (is_top_frame) {
 } else {
   // Article contents.
   iframeWindow = window;
+  mainWindow.onIframeLoad();
 
   // Other initialization of iframe contents.
   hljs.initHighlightingOnLoad();
