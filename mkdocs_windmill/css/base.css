@@ -56,6 +56,10 @@ body {
   vertical-align: middle;
 }
 
+.wm-top-logo {
+  max-height: 100%;
+}
+
 .wm-top-version {
   border: 1px solid #ddd;
   border-radius: 3px;

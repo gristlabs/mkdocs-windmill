@@ -1,0 +1,22 @@
+site_name: 'Windmill MkDocs Theme'
+site_description: 'MkDocs theme focused on navigation and usability.'
+site_author: 'Dmitry S'
+
+repo_url: https://github.com/gristlabs/mkdocs-windmill
+
+theme_dir: mkdocs_windmill
+
+pages:
+- Windmill Theme:
+  - Usage: index.md
+  - Customization: customization.md
+- Samples:
+  - Sample Page A: sample-a.md
+  - Sample Subfolder:
+    - Sample Subpage A1: sample-a1.md
+    - Sample Subpage A2: sample-a2.md
+  - Sample Page B: sample-b.md
+
+markdown_extensions:
+  - toc:
+      permalink: '#'
