@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MkDocs theme focused on navigation and usability.">
+    <meta name="author" content="Dmitry S">
+    
+    <link rel="shortcut icon" href="./img/favicon.ico">
+    <title>Windmill MkDocs Theme</title>
+    <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
+    <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
+    <link href="./css/base.css" rel="stylesheet">
+    <link rel="stylesheet" href="./css/highlight.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap-3.3.7.min.js"></script>
+    <script src="./js/highlight.pack.js"></script>
+    
+      <script src="./js/elasticlunr.min.js"></script>
+    
+    <base target="_top">
+    <script>
+      var base_url = '.';
+      var is_top_frame = (window === window.parent);
+        
+        var pageToc = [
+          {title: "Windmill theme", url: "#windmill-theme", children: [
+              {title: "About", url: "#about" },
+              {title: "Installation", url: "#installation" },
+              {title: "Usage", url: "#usage" },
+          ]},
+        ];
+
+    </script>
+    <script src="./js/base.js"></script> 
+</head>
+
+<body>
+<script>
+if (is_top_frame) { $('body').addClass('wm-top-page'); }
+</script>
+
+<nav class="navbar wm-page-top-frame">
+  <div class="container-fluid">
+    
+    <a href="" class="wm-top-brand">
+      <div class="wm-vcenter"></div>
+      
+      <div class="wm-top-title">
+        Windmill MkDocs Theme<br>
+        
+      </div>
+    </a>
+
+    
+    <div class="wm-top-toolbar pull-right">
+      <div class="wm-top-tool">
+        <div class="btn-toolbar text-nowrap" role="toolbar">
+          
+          <div class="btn-group" role="group" aria-label="side-pane">
+            <button id="toc-button" type="button" class="btn btn-sm btn-default"><i class="fa fa-th-list" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </div>
+      <div class="wm-top-tool">
+        <form class="dropdown" id="search-form" action="./search.html">
+          <div class="input-group input-group-sm wm-top-search">
+            <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
+            <span class="input-group-btn" role="search">
+              <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+              
+              <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
+              <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right">
+              </ul>
+            </span>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</nav>
+
+  <div id="main-content" class="wm-page-top-frame">
+    
+<nav class="wm-toc-pane">
+  <ul class="wm-toctree">
+        <li class="wm-toc-li wm-toc-lev1 wm-toc-opener"><span class="wm-toc-text">Windmill Theme</span>
+</li>
+<li class="wm-toc-li-nested collapse">
+  <ul class="wm-toctree">
+      <li class="wm-toc-li wm-toc-lev2 "><a href="." class="wm-article-link wm-toc-text">Usage</a>
+</li>
+      <li class="wm-toc-li wm-toc-lev2 "><a href="customization/" class="wm-article-link wm-toc-text">Customization</a>
+</li>
+  </ul>
+</li>
+
+        <li class="wm-toc-li wm-toc-lev1 wm-toc-opener"><span class="wm-toc-text">Samples</span>
+</li>
+<li class="wm-toc-li-nested collapse">
+  <ul class="wm-toctree">
+      <li class="wm-toc-li wm-toc-lev2 "><a href="sample-a/" class="wm-article-link wm-toc-text">Sample Page A</a>
+</li>
+      <li class="wm-toc-li wm-toc-lev2 wm-toc-opener"><span class="wm-toc-text">Sample Subfolder</span>
+</li>
+<li class="wm-toc-li-nested collapse">
+  <ul class="wm-toctree">
+      <li class="wm-toc-li wm-toc-lev3 "><a href="sample-a1/" class="wm-article-link wm-toc-text">Sample Subpage A1</a>
+</li>
+      <li class="wm-toc-li wm-toc-lev3 "><a href="sample-a2/" class="wm-article-link wm-toc-text">Sample Subpage A2</a>
+</li>
+  </ul>
+</li>
+
+      <li class="wm-toc-li wm-toc-lev2 "><a href="sample-b/" class="wm-article-link wm-toc-text">Sample Page B</a>
+</li>
+  </ul>
+</li>
+
+  </ul>
+</nav>
+
+    <div class="wm-content-pane">
+      <iframe class="wm-article" name="article"></iframe>
+    </div>
+  </div>
+
+<div class="container-fluid wm-page-content">
+    
+
+    <div class="wm-article-nav-buttons" role="navigation" aria-label="navigation">
+      
+      <div class="wm-article-nav pull-right">
+        <a href="customization/" class="btn btn-xs btn-default pull-right">
+          Next
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+        <a href="customization/" class="btn btn-xs btn-link">
+          Customization
+        </a>
+      </div>
+      
+    </div>
+
+    
+
+    <h1 id="windmill-theme">Windmill theme<a class="headerlink" href="#windmill-theme" title="Permanent link">#</a></h1>
+<h2 id="about">About<a class="headerlink" href="#about" title="Permanent link">#</a></h2>
+<p>Windmill theme focuses on clean usable navigation for large documentation
+projects. It retains the state of the menu of pages and folders across page
+transitions, by keeping navigation to an iframe.</p>
+<p>It also implements a versatile search, featuring term highlighting, and both a
+quick dropdown and a full-page option that allows the user to come back to
+search results.</p>
+<p>Within pages, it uses the default mkdocs theme, including syntax highlighting.</p>
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">#</a></h2>
+<p>Install the Windmill theme using <code>pip</code>:</p>
+<pre><code class="sh">pip install mkdocs-windmill
+</code></pre>
+
+<p>To install and get started with <code>mkdocs</code>, follow <a href="http://www.mkdocs.org/#installation">MkDocs documentation</a>.</p>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
+<p>To use the Windmill theme installed via <code>pip</code>, add this to your <code>mkdocs.yml</code>:</p>
+<pre><code class="yaml">theme: 'windmill'
+</code></pre>
+
+<p>If you cloned Windmill from GitHub:</p>
+<pre><code class="yaml">theme_dir: 'mkdocs-windmill/mkdocs_windmill'
+</code></pre>
+
+<p>See <a href="customization/">Customization</a> for a few extra configuration options
+supported by the Windmill theme.</p>
+
+  <br>
+    
+
+    <div class="wm-article-nav-buttons" role="navigation" aria-label="navigation">
+      
+      <div class="wm-article-nav pull-right">
+        <a href="customization/" class="btn btn-xs btn-default pull-right">
+          Next
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a>
+        <a href="customization/" class="btn btn-xs btn-link">
+          Customization
+        </a>
+      </div>
+      
+    </div>
+
+    <br>
+</div>
+
+<footer class="col-md-12 wm-page-content">
+  <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
+</footer>
+
+</body>
+</html>
+<!--
+MkDocs version : 0.16.3
+Build Date UTC : 2017-05-26 20:06:27
+-->
