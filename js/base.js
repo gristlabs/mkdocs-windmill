@@ -205,6 +205,7 @@ function initMainWindow() {
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
     document.title = iframeWindow.document.title;
+    iframeWindow.focus();
   });
 
   // Initialize search functionality.
