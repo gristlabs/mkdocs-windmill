@@ -38,7 +38,7 @@ body {
   text-decoration: none;
 }
 
-.wm-top-brand:hover, .wm-top-brand:active, .wm-top-brand:visited, .wm-top-brand:focus {
+.wm-top-link:hover, .wm-top-link:active, .wm-top-link:visited, .wm-top-link:focus {
   color: #fff;
   text-decoration: none;
 }
@@ -79,6 +79,7 @@ body {
 .wm-top-tool {
   display: inline-block;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .wm-top-search {
@@ -197,7 +198,6 @@ body {
 
 .wm-toc-li.wm-current a {
   color: white;
-  pointer-events: none;
 }
 
 .wm-toc-li-nested.wm-page-toc {

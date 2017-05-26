@@ -195,9 +195,11 @@ function initMainWindow() {
     $(this).next('.wm-toc-li-nested').collapse('toggle');
   });
   $('.wm-toc-pane').on('click', '.wm-page-toc-opener', function(e) {
+    // Ignore clicks while transitioning.
+    if ($(this).next('.wm-page-toc').hasClass('collapsing')) { return; }
     showPageToc = !showPageToc;
-    $(this).toggleClass('wm-page-toc-open');
-    $(this).next('.wm-page-toc').collapse('toggle');
+    $(this).toggleClass('wm-page-toc-open', showPageToc);
+    $(this).next('.wm-page-toc').collapse(showPageToc ? 'show' : 'hide');
   });
 
   // Once the article loads in the side-pane, close the dropdown.
@@ -280,24 +282,6 @@ function renderPageToc(parentElem, pageUrl, pageToc) {
 }
 
 
-if (is_top_frame) {
-  // Main window.
-  $(document).ready(function() {
-    iframeWindow = $('.wm-article')[0].contentWindow;
-    initMainWindow();
-  });
-
-} else {
-  // Article contents.
-  iframeWindow = window;
-  mainWindow.onIframeLoad();
-
-  // Other initialization of iframe contents.
-  hljs.initHighlightingOnLoad();
-  $('table').addClass('table table-striped table-hover');
-}
-
-
 if (!mainWindow) {
   // This is a page that ought to be in an iframe. Redirect to load the top page instead.
   var topUrl = getAbsUrl('#', getRelPath('/', window.location.href));
@@ -313,6 +297,25 @@ if (!mainWindow) {
 
   // For any dynamically-created links, adjust them on click.
   $(document).on('click', 'a:not([data-wm-adjusted])', function(e) { adjustLink(this); });
+}
+
+if (is_top_frame) {
+  // Main window.
+  $(document).ready(function() {
+    iframeWindow = $('.wm-article')[0].contentWindow;
+    initMainWindow();
+  });
+
+} else {
+  // Article contents.
+  iframeWindow = window;
+  if (mainWindow) {
+    mainWindow.onIframeLoad();
+  }
+
+  // Other initialization of iframe contents.
+  hljs.initHighlightingOnLoad();
+  $('table').addClass('table table-striped table-hover');
 }
 
 
