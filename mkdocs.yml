@@ -20,3 +20,6 @@ pages:
 markdown_extensions:
   - toc:
       permalink: '#'
+
+extra:
+  history_buttons: true
