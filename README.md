@@ -1,18 +1,25 @@
 # Windmill theme for MkDocs
 Outstanding mkdocs theme with a focus on navigation and usability, from Grist Labs.
 
-1. `pip install mkdocs-windmill`
-2. Add to your mkdocs.yml: `theme: windmill`
+Highlights:
+- Convenient navigation for larger documentation projects.
+- Retains state of the navigation menu across page transitions.
+- Search with term highlighting.
+- User may search in a quick dropdown or load results in a full page.
+- Default mkdocs theme within pages, including syntax highlighting.
 
-Documentation TBD
+## Quick start
 
-## Extra configuration options
+To install using `pip`:
+``` sh
+pip install mkdocs-windmill
+```
 
-Windmill theme supports several options, which may be listed under the `extra:` key of
-`mkdocs.yml`.
+To use in `mkdocs.yml`:
+``` yaml
+theme: windmill
+```
 
-* `extra.article_nav_top`: Defaults to `true` to show "Previous/Next" article navigation
-  buttons above the article contents. Set to `false` to turn off.
+See [Usage](docs/index.md) for more on installation and usage.
 
-* `extra.article_nav_bottom`: Defaults to `true` to show "Previous/Next" article navigation
-  buttons below the article contents. Set to `false` to turn off.
+See [Customization](docs/customization.md) for extra configuration options that Windmill supports.
