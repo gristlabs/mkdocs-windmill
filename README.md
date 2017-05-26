@@ -20,6 +20,8 @@ To use in `mkdocs.yml`:
 theme: windmill
 ```
 
-See [Usage](docs/index.md) for more on installation and usage.
+## Demo and documentation
 
-See [Customization](docs/customization.md) for extra configuration options that Windmill supports.
+More details are on this site generated with the Windmill theme:
+- [Usage](https://gristlabs.github.io/mkdocs-windmill/#) for more on installation and usage.
+- [Customization](https://gristlabs.github.io/mkdocs-windmill/#customization/) for extra configuration options that Windmill supports.

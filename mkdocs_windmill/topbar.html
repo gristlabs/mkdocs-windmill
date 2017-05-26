@@ -1,7 +1,7 @@
 <nav class="navbar wm-page-top-frame">
   <div class="container-fluid">
     {# Logo and title #}
-    <a href="{{ name }}" class="wm-top-brand">
+    <a href="{{ name }}" class="wm-top-brand wm-top-link">
       <div class="wm-vcenter"></div>
       {% if config.extra.logo %}
         <img class="wm-top-logo" src="{{ base_url }}/{{ config.extra.logo }}"/>
@@ -43,6 +43,21 @@
           </div>
         </form>
       </div>
+      {%- block repo %}
+        {%- if config.repo_url %}
+          <div class="wm-top-tool">
+            <div class="wm-vcenter"></div>
+            <a class="wm-top-link" href="{{ config.repo_url }}">
+                {%- if config.repo_name == 'GitHub' %}
+                    <i class="fa fa-github"></i>
+                {%- elif config.repo_name == 'Bitbucket' -%}
+                    <i class="fa fa-bitbucket"></i>
+                {%- endif -%}
+                {{ config.repo_name }}
+            </a>
+          </div>
+        {%- endif %}
+      {%- endblock %}
     </div>
   </div>
 </nav>
