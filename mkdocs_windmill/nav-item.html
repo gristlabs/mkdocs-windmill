@@ -7,7 +7,7 @@
 </li>
 
 {%- if nav_item.children %}
-<li class="wm-toc-li-nested">
+<li class="wm-toc-li-nested collapse">
   <ul class="wm-toctree">
     {%- set navlevel = navlevel + 1%}
     {%- for nav_item in nav_item.children %}

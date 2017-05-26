@@ -165,8 +165,11 @@ body {
 .wm-toc-lev2 > .wm-toc-text { padding-left: 28px; }
 .wm-toc-lev3 > .wm-toc-text { padding-left: 42px; }
 
+.wm-toc-lev1 + .wm-page-toc { margin-left: 14px; }
+.wm-toc-lev2 + .wm-page-toc { margin-left: 28px; }
+.wm-toc-lev3 + .wm-page-toc { margin-left: 42px; }
+
 .wm-toc-li-nested {
-  display: none;
   padding: 0px;
   margin: 0px;
 }
@@ -179,12 +182,8 @@ body {
   width: 14px;
 }
 
-.wm-toc-opener.open > .wm-toc-text::before {
+.wm-toc-opener.wm-toc-open > .wm-toc-text::before {
   content: "\25BC";
-}
-
-.wm-toc-li.open + .wm-toc-li-nested {
-  display: block;
 }
 
 .wm-toc-li.wm-current, .wm-toc-li.wm-current:hover {
@@ -202,29 +201,26 @@ body {
 }
 
 .wm-toc-li-nested.wm-page-toc {
-  display: block;
   font-size: 1.2rem;
   line-height: 1.2rem;
-}
-
-.wm-page-toc-opener.wm-page-toc-closed + .wm-page-toc {
-  display: none;
+  overflow: hidden;
+  border-left: 1px solid #546e7a;
 }
 
 .wm-page-toc-opener > .wm-toc-text::after {
-  content: "\25BC";
+  content: "\25C4";
   display: inline-block;
   float: right;
   vertical-align: middle;
   font-size: 8px;
 }
 
-.wm-page-toc-closed.wm-page-toc-closed > .wm-toc-text::after {
-  content: "\25C4";
+.wm-page-toc-opener.wm-page-toc-open > .wm-toc-text::after {
+  content: "\25BC";
 }
 
 .wm-page-toc-text {
-  padding: 2px 2px 2px 56px;
+  padding: 2px 2px 2px 1rem;
   display: block;
   cursor: pointer;
 }

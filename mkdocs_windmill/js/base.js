@@ -15,6 +15,7 @@ var mainWindow = is_top_frame ? window : (window.parent !== window ? window.pare
 var iframeWindow = null;
 var rootUrl = qualifyUrl(base_url);
 var searchIndex = null;
+var showPageToc = true;
 
 var Keys = {
   ENTER:  13,
@@ -70,8 +71,7 @@ function updateIframe(enableForwardNav) {
 
   if (currentIframeUrl !== targetIframeUrl) {
     loc.replace(targetIframeUrl);
-    highlightCurrentUrl(targetIframeUrl);
-    closeTocDropdown();
+    onIframeBeforeLoad(targetIframeUrl);
   }
 }
 
@@ -190,9 +190,14 @@ function initMainWindow() {
   $(window).on('blur', closeTocDropdown);
 
   // When we click on an opener in the table of contents, open it.
-  $('.wm-toc-pane').on('click', '.wm-toc-opener', function(e) { $(this).toggleClass('open'); });
-  $('.wm-toc-pane').on('click', '.wm-current', function(e) {
-    $(this).toggleClass('wm-page-toc-closed');
+  $('.wm-toc-pane').on('click', '.wm-toc-opener', function(e) {
+    $(this).toggleClass('wm-toc-open');
+    $(this).next('.wm-toc-li-nested').collapse('toggle');
+  });
+  $('.wm-toc-pane').on('click', '.wm-page-toc-opener', function(e) {
+    showPageToc = !showPageToc;
+    $(this).toggleClass('wm-page-toc-open');
+    $(this).next('.wm-page-toc').collapse('toggle');
   });
 
   // Once the article loads in the side-pane, close the dropdown.
@@ -208,26 +213,48 @@ function initMainWindow() {
   $(window).on('popstate', function() { updateIframe(true); });
 }
 
-function highlightCurrentUrl(url) {
+function onIframeBeforeLoad(url) {
   $('.wm-current').removeClass('wm-current');
+  closeTocDropdown();
 
+  var tocLi = getTocLi(url);
+  tocLi.addClass('wm-current');
+  tocLi.parents('.wm-toc-li-nested')
+    // It's better to open parent items immediately without a transition.
+    .removeClass('collapsing').addClass('collapse in').height('')
+    .prev('.wm-toc-opener').addClass('wm-toc-open');
+}
+
+function getTocLi(url) {
   var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(url)));
   var selector = '.wm-article-link[href="' + relPath + '"]';
-  $(selector).closest('.wm-toc-li').addClass('wm-current');
-  $(selector).closest('.wm-toc-li-nested').prev().addClass('open');
-  return relPath;
+  return $(selector).closest('.wm-toc-li');
 }
 
 function onIframeLoad() {
-  var relPath = highlightCurrentUrl(iframeWindow.location.href);
+  var url = iframeWindow.location.href;
+  onIframeBeforeLoad(url);
 
-  $('.wm-current').removeClass('wm-page-toc-opener wm-page-toc-closed');
   if (iframeWindow.pageToc) {
-    var selector = '.wm-article-link[href="' + relPath + '"]';
-    renderPageToc($(selector).closest('.wm-toc-li'), relPath, iframeWindow.pageToc);
+    var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(url)));
+    renderPageToc(getTocLi(url), relPath, iframeWindow.pageToc);
   }
-  closeTocDropdown();
   iframeWindow.focus();
+}
+
+/**
+ * Hides a bootstrap collapsible element, and removes it from DOM once hidden.
+ */
+function collapseAndRemove(collapsibleElem) {
+  if (!collapsibleElem.hasClass('in')) {
+    // If the element is already hidden, just remove it immediately.
+    collapsibleElem.remove();
+  } else {
+    collapsibleElem.on('hidden.bs.collapse', function() {
+      collapsibleElem.remove();
+    })
+    .collapse('hide');
+  }
 }
 
 function renderPageToc(parentElem, pageUrl, pageToc) {
@@ -243,9 +270,13 @@ function renderPageToc(parentElem, pageUrl, pageToc) {
     }
   }
   pageToc.forEach(addItem);
-  parentElem.addClass('wm-page-toc-opener');
-  $('.wm-page-toc').remove();
-  parentElem.after($('<li class="wm-page-toc wm-toc-li-nested">').append(ul));
+
+  $('.wm-page-toc-opener').removeClass('wm-page-toc-opener wm-page-toc-open');
+  collapseAndRemove($('.wm-page-toc'));
+
+  parentElem.addClass('wm-page-toc-opener').toggleClass('wm-page-toc-open', showPageToc);
+  $('<li class="wm-page-toc wm-toc-li-nested collapse">').append(ul).insertAfter(parentElem)
+    .collapse(showPageToc ? 'show' : 'hide');
 }
 
 
