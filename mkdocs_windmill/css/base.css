@@ -38,7 +38,7 @@ body {
   text-decoration: none;
 }
 
-.wm-top-link:hover, .wm-top-link:active, .wm-top-link:visited, .wm-top-link:focus {
+.wm-top-link, .wm-top-link:hover, .wm-top-link:active, .wm-top-link:visited, .wm-top-link:focus {
   color: #fff;
   text-decoration: none;
 }
@@ -83,8 +83,8 @@ body {
 }
 
 .wm-top-search {
-  max-width: 20rem;
-  margin-left: 1rem;
+  width: 20rem;
+  padding-left: 1rem;
 }
 
 /***********************************************************************
