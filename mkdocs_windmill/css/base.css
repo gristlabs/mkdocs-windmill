@@ -41,10 +41,6 @@ body {
   text-decoration: none;
 }
 
-.wm-repo-link {
-  margin-left: 1rem;
-}
-
 .wm-vcenter:before {
   content: '';
   display: inline-block;
@@ -138,6 +134,13 @@ body {
   margin-left: 0;
 }
 
+.wm-toc-repo {
+  margin-top: -15px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
 .wm-toc-hidden > .wm-toc-pane {
   margin-left: -250px;
 }
@@ -169,6 +172,7 @@ body {
   }
   #wm-search-show {
     display: block;
+    margin-left: 1rem;
   }
   .wm-top-tool-expanded #wm-search-show {
     display: none;

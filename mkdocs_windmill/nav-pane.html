@@ -1,5 +1,23 @@
 {# Side-pane with table of contents #}
 <nav class="wm-toc-pane">
+  {# Optional link to the repository #}
+  {%- block repo %}
+    {%- if config.repo_url %}
+    <ul class="wm-toctree wm-toc-repo">
+      <li class="wm-toc-li wm-toc-lev1">
+      <a class="wm-article-link wm-toc-text" href="{{ config.repo_url }}">
+        {%- if config.repo_name == 'GitHub' %}
+        <i class="fa fa-github"></i>
+        {%- elif config.repo_name == 'Bitbucket' %}
+        <i class="fa fa-bitbucket"></i>
+        {%- endif %}
+        {{ config.repo_name }}
+      </a>
+      </li>
+    </ul>
+    {%- endif %}
+  {%- endblock %}
+
   {%- block site_nav %}
   <ul class="wm-toctree">
     {%- set navlevel = 1 %}

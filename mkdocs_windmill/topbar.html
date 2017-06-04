@@ -1,21 +1,5 @@
 <nav class="navbar wm-page-top-frame">
   <div class="container-fluid wm-top-container">
-    {# Optional link to the repository #}
-    {%- block repo %}
-      {%- if config.repo_url %}
-        <div class="wm-top-tool pull-right wm-vcenter wm-small-hide">
-          <a class="wm-top-link wm-repo-link wm-vcentered" href="{{ config.repo_url }}">
-              {%- if config.repo_name == 'GitHub' %}
-                  <i class="fa fa-github"></i>
-              {%- elif config.repo_name == 'Bitbucket' -%}
-                  <i class="fa fa-bitbucket"></i>
-              {%- endif -%}
-              {{ config.repo_name }}
-          </a>
-        </div>
-      {%- endif %}
-    {%- endblock %}
-
     {# Search input and button #}
     <div class="wm-top-tool pull-right wm-vcenter">
       <form class="dropdown wm-vcentered" id="wm-search-form" action="{{ base_url }}/search.html">
@@ -42,7 +26,7 @@
 
     {# Optional forward-back buttons #}
     {% if config.extra.history_buttons %}
-    <div class="wm-top-tool pull-right wm-vcenter wm-small-hide">
+    <div class="wm-top-tool pull-right wm-vcenter">
       <div class="btn-group wm-vcentered" role="group" aria-label="back">
         <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
         <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
