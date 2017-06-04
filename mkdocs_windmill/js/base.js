@@ -110,7 +110,7 @@ function updateTocButtonState() {
   } else {
     shown = !$('#main-content').hasClass('wm-toc-hidden');
   }
-  $('#toc-button').toggleClass('active', shown);
+  $('#wm-toc-button').toggleClass('active', shown);
 }
 
 /**
@@ -166,9 +166,9 @@ function cleanUrlPath(relUrl) {
  * Initialize the main window.
  */
 function initMainWindow() {
-  // toc-button either opens the table of contents in the side-pane, or (on smaller screens) shows
-  // the side-pane as a drop-down.
-  $('#toc-button').on('click', function(e) {
+  // wm-toc-button either opens the table of contents in the side-pane, or (on smaller screens)
+  // shows the side-pane as a drop-down.
+  $('#wm-toc-button').on('click', function(e) {
     if (window.matchMedia("(max-width: 600px)").matches) {
       $('.wm-toc-pane').toggleClass('wm-toc-dropdown');
       $('#wm-main-content').removeClass('wm-toc-hidden');
@@ -179,7 +179,7 @@ function initMainWindow() {
     updateTocButtonState();
   });
 
-  // Update the state of the toc-button
+  // Update the state of the wm-toc-button
   updateTocButtonState();
   $(window).on('resize', updateTocButtonState);
 
@@ -403,11 +403,11 @@ function initSearch() {
   $(searchResults).on('click', '.search-all', function(e) {
     e.stopPropagation();
     e.preventDefault();
-    $('#search-form').trigger('submit');
+    $('#wm-search-form').trigger('submit');
   });
 
   // Redirect to the search page on Enter or button-click (form submit).
-  $('#search-form').on('submit', function(e) {
+  $('#wm-search-form').on('submit', function(e) {
     var url = this.action + '?' + $(this).serialize();
     visitUrl(url, e);
     searchResults.parent().removeClass('open');

@@ -91,7 +91,11 @@ body {
 
 .wm-top-search {
   width: 20rem;
-  padding-left: 1rem;
+}
+
+#wm-toc-button {
+  margin-right: 1rem;
+  margin-left: 0.5rem;
 }
 
 /***********************************************************************
@@ -146,6 +150,9 @@ body {
   display: none;
 }
 
+#wm-search-form {
+  width: 100%;
+}
 #wm-search-show {
   display: none;
 }
