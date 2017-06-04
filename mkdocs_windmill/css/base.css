@@ -46,10 +46,11 @@ body {
 }
 
 .wm-vcenter:before {
-  content: '\200B';
+  content: '';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
+  margin-left: -0.25em;
 }
 
 .wm-vcentered {
@@ -78,6 +79,14 @@ body {
 .wm-top-tool {
   height: 50px;
   white-space: nowrap;
+}
+
+.wm-top-tool-expanded {
+  position: absolute;
+  right: 0px;
+  padding: inherit;
+  width: 100%;
+  background-color: #546e7a;
 }
 
 .wm-top-search {
@@ -137,6 +146,10 @@ body {
   display: none;
 }
 
+#wm-search-show {
+  display: none;
+}
+
 @media (max-width: 600px) {
   .wm-small-hide {
     display: none;
@@ -147,6 +160,21 @@ body {
   .wm-small-left {
     float: left !important;
   }
+  #wm-search-show {
+    display: block;
+  }
+  .wm-top-tool-expanded #wm-search-show {
+    display: none;
+  }
+  .wm-top-search {
+    display: none;
+  }
+  .wm-top-tool-expanded .wm-top-search {
+    display: table;
+    width: 100%;
+    padding: 0px;
+  }
+
 
   .wm-toc-pane {
     display: none;

@@ -20,15 +20,16 @@
     <div class="wm-top-tool pull-right wm-vcenter">
       <form class="dropdown wm-vcentered" id="search-form" action="{{ base_url }}/search.html">
         {# Button to show search-box on small screens #}
-        <button class="wm-small-show btn btn-sm btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+        <button id="wm-search-show" class="btn btn-sm btn-default" type="submit"
+          ><i class="fa fa-search" aria-hidden="true"></i></button>
 
-        <div class="input-group input-group-sm wm-top-search wm-small-hide">
+        <div class="input-group input-group-sm wm-top-search">
           <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
           <span class="input-group-btn" role="search">
             {# This button is hidden, but exists because an element with data-toggle attr is relied on by bootstrap. #}
             <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
             <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right"></ul>
-            <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+            <button id="wm-search-go" class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
           </span>
         </div>
       </form>

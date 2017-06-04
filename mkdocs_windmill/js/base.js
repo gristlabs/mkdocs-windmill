@@ -411,6 +411,11 @@ function initSearch() {
     visitUrl(url, e);
     searchResults.parent().removeClass('open');
   });
+
+  $('#wm-search-show,#wm-search-go').on('click', function(e) {
+    $('#mkdocs-search-query').closest('.wm-top-tool').toggleClass('wm-top-tool-expanded');
+    setTimeout(function() { $('#mkdocs-search-query').focus(); }, 0);
+  });
 }
 
 function escapeRegex(s) {
