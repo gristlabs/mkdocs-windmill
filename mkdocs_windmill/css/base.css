@@ -183,6 +183,11 @@ body {
   }
 
 
+  .wm-top-container {
+    /* This prevents horizontal overflow, but cuts off search results on bigger
+     * screens, so included in small-screen section */
+    overflow-x: hidden;
+  }
   .wm-toc-pane {
     display: none;
   }

@@ -417,7 +417,10 @@ function initSearch() {
     if (window.matchMedia("(max-width: 600px)").matches) {
       e.preventDefault();
       $('#mkdocs-search-query').closest('.wm-top-tool').toggleClass('wm-top-tool-expanded');
-      setTimeout(function() { $('#mkdocs-search-query').focus(); }, 0);
+      setTimeout(function() {
+        $('#mkdocs-search-query').focus();
+        showSearchResults();
+      }, 0);
     }
   });
 }
