@@ -1,7 +1,8 @@
 {% block article_nav %}
   {%- if page and (page.next_page or page.previous_page) %}
 
-    <div class="wm-article-nav-buttons" role="navigation" aria-label="navigation">
+  <div class="container wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    <div class="row">
       {% if page.next_page %}
       <div class="wm-article-nav pull-right">
         <a href="{{ page.next_page.url }}" class="btn btn-xs btn-default pull-right">
@@ -24,6 +25,7 @@
       </div>
       {% endif %}
     </div>
+  </div>
 
   {%- endif %}
 {% endblock %}
