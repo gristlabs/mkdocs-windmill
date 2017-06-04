@@ -26,14 +26,12 @@ body {
 
 .wm-top-brand {
   display: inline-block;
+  float: left;
   overflow: visible;
-  width: 10rem;
+  width: 0px;
   height: 50px;
-  padding: 0 15px;
-  margin-left: -15px;
   color: #fff;
   font-size: 18px;
-  line-height: 20px;
   white-space: nowrap;
   text-decoration: none;
 }
@@ -43,14 +41,23 @@ body {
   text-decoration: none;
 }
 
-.wm-vcenter {
+.wm-repo-link {
+  margin-left: 1rem;
+}
+
+.wm-vcenter:before {
+  content: '\200B';
   display: inline-block;
   height: 100%;
   vertical-align: middle;
 }
 
+.wm-vcentered {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .wm-top-title {
-  margin-left: 1rem;
   display: inline-block;
   line-height: 16px;
   vertical-align: middle;
@@ -68,18 +75,9 @@ body {
   font-size: 8pt;
 }
 
-.wm-top-toolbar {
-  margin-top: 10px;
-  display: inline-block;
-  width: calc(100% - 10rem);
-  overflow: visible;
-  text-align: right;
-}
-
 .wm-top-tool {
-  display: inline-block;
+  height: 50px;
   white-space: nowrap;
-  vertical-align: middle;
 }
 
 .wm-top-search {
@@ -135,7 +133,21 @@ body {
   padding-left: 0px;
 }
 
+.wm-small-show {
+  display: none;
+}
+
 @media (max-width: 600px) {
+  .wm-small-hide {
+    display: none;
+  }
+  .wm-small-show {
+    display: block;
+  }
+  .wm-small-left {
+    float: left !important;
+  }
+
   .wm-toc-pane {
     display: none;
   }
