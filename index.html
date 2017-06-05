@@ -10,6 +10,7 @@
     <meta name="author" content="Dmitry S">
     
     <link rel="shortcut icon" href="./img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
     <title>Windmill MkDocs Theme</title>
     <link href="./css/bootstrap-3.3.7.min.css" rel="stylesheet">
     <link href="./css/font-awesome-4.7.0.css" rel="stylesheet">
@@ -50,59 +51,66 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 </script>
 
 <nav class="navbar wm-page-top-frame">
-  <div class="container-fluid">
+  <div class="container-fluid wm-top-container">
     
-    <a href="" class="wm-top-brand wm-top-link">
-      <div class="wm-vcenter"></div>
+    <div class="wm-top-tool pull-right wm-vcenter">
+      <form class="dropdown wm-vcentered" id="wm-search-form" action="./search.html">
+        
+        <button id="wm-search-show" class="btn btn-sm btn-default" type="submit"
+          ><i class="fa fa-search" aria-hidden="true"></i></button>
+
+        <div class="input-group input-group-sm wm-top-search">
+          <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
+          <span class="input-group-btn" role="search">
+            
+            <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
+            <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right"></ul>
+            <button id="wm-search-go" class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </span>
+        </div>
+      </form>
+    </div>
+
+    
+    <div class="wm-top-tool wm-vcenter pull-right wm-small-left">
+      <button id="wm-toc-button" type="button" class="btn btn-sm btn-default wm-vcentered"><i class="fa fa-th-list" aria-hidden="true"></i></button>
+    </div>
+
+    
+    
+    <div class="wm-top-tool pull-right wm-vcenter">
+      <div class="btn-group wm-vcentered" role="group" aria-label="back">
+        <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+        <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    
+
+    
+    <a href="" class="wm-top-brand wm-top-link wm-vcenter">
       
       <div class="wm-top-title">
         Windmill MkDocs Theme<br>
         
+          <span class="wm-top-version">v0.1.0</span>
+        
       </div>
     </a>
-
-    
-    <div class="wm-top-toolbar pull-right">
-      <div class="wm-top-tool">
-        <div class="btn-toolbar text-nowrap" role="toolbar">
-          
-          <div class="btn-group" role="group" aria-label="back">
-            <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
-            <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-          </div>
-          
-          <div class="btn-group" role="group" aria-label="side-pane">
-            <button id="toc-button" type="button" class="btn btn-sm btn-default"><i class="fa fa-th-list" aria-hidden="true"></i></button>
-          </div>
-        </div>
-      </div>
-      <div class="wm-top-tool">
-        <form class="dropdown" id="search-form" action="./search.html">
-          <div class="input-group input-group-sm wm-top-search">
-            <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
-            <span class="input-group-btn" role="search">
-              <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-              
-              <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
-              <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right">
-              </ul>
-            </span>
-          </div>
-        </form>
-      </div>
-          <div class="wm-top-tool">
-            <div class="wm-vcenter"></div>
-            <a class="wm-top-link" href="https://github.com/gristlabs/mkdocs-windmill">
-                    <i class="fa fa-github"></i>GitHub
-            </a>
-          </div>
-    </div>
   </div>
 </nav>
 
   <div id="main-content" class="wm-page-top-frame">
     
 <nav class="wm-toc-pane">
+  
+    <ul class="wm-toctree wm-toc-repo">
+      <li class="wm-toc-li wm-toc-lev1">
+      <a class="wm-article-link wm-toc-text" href="https://github.com/gristlabs/mkdocs-windmill">
+        <i class="fa fa-github"></i>
+        GitHub
+      </a>
+      </li>
+    </ul>
   <ul class="wm-toctree">
         <li class="wm-toc-li wm-toc-lev1 wm-toc-opener"><span class="wm-toc-text">Windmill Theme</span>
 </li>
@@ -148,7 +156,8 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 <div class="container-fluid wm-page-content">
     
 
-    <div class="wm-article-nav-buttons" role="navigation" aria-label="navigation">
+  <div class="container wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    <div class="row">
       
       <div class="wm-article-nav pull-right">
         <a href="customization/" class="btn btn-xs btn-default pull-right">
@@ -161,6 +170,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
       </div>
       
     </div>
+  </div>
 
     
 
@@ -194,7 +204,8 @@ supported by the Windmill theme.</p>
   <br>
     
 
-    <div class="wm-article-nav-buttons" role="navigation" aria-label="navigation">
+  <div class="container wm-article-nav-buttons" role="navigation" aria-label="navigation">
+    <div class="row">
       
       <div class="wm-article-nav pull-right">
         <a href="customization/" class="btn btn-xs btn-default pull-right">
@@ -207,6 +218,7 @@ supported by the Windmill theme.</p>
       </div>
       
     </div>
+  </div>
 
     <br>
 </div>
@@ -219,5 +231,5 @@ supported by the Windmill theme.</p>
 </html>
 <!--
 MkDocs version : 0.16.3
-Build Date UTC : 2017-05-26 22:18:02
+Build Date UTC : 2017-06-05 05:38:58
 -->
