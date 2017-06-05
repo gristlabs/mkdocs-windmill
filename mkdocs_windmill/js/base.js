@@ -16,6 +16,7 @@ var iframeWindow = null;
 var rootUrl = qualifyUrl(base_url);
 var searchIndex = null;
 var showPageToc = true;
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var Keys = {
   ENTER:  13,
@@ -70,6 +71,7 @@ function updateIframe(enableForwardNav) {
     currentIframeUrl === targetIframeUrl ? "same" : "replacing");
 
   if (currentIframeUrl !== targetIframeUrl) {
+    $(window).scrollTop(0);
     loc.replace(targetIframeUrl);
     onIframeBeforeLoad(targetIframeUrl);
   }
@@ -110,14 +112,28 @@ function updateTocButtonState() {
   } else {
     shown = !$('#main-content').hasClass('wm-toc-hidden');
   }
-  $('#toc-button').toggleClass('active', shown);
+  $('#wm-toc-button').toggleClass('active', shown);
+}
+
+/**
+ * Update the height of the iframe container. On small screens, we adjust it to fit the iframe
+ * contents, so that the page scrolls as a whole rather than inside the iframe.
+ */
+function updateContentHeight() {
+  console.log("updateContentHeight");
+  if (window.matchMedia("(max-width: 600px)").matches) {
+    $('.wm-content-pane').height(iframeWindow.document.body.offsetHeight + 20);
+  } else {
+    $('.wm-content-pane').height('');
+  }
 }
 
 /**
  * When TOC is a dropdown (on small screens), close it.
  */
-function closeTocDropdown() {
+function closeTempItems() {
   $('.wm-toc-dropdown').removeClass('wm-toc-dropdown');
+  $('#mkdocs-search-query').closest('.wm-top-tool').removeClass('wm-top-tool-expanded');
   updateTocButtonState();
 }
 
@@ -134,7 +150,7 @@ function visitUrl(url, event) {
       mainWindow.history.pushState(null, '', newUrl);
       updateIframe(false);
     }
-    closeTocDropdown();
+    closeTempItems();
     iframeWindow.focus();
   }
 }
@@ -165,29 +181,32 @@ function cleanUrlPath(relUrl) {
  * Initialize the main window.
  */
 function initMainWindow() {
-  // toc-button either opens the table of contents in the side-pane, or (on smaller screens) shows
-  // the side-pane as a drop-down.
-  $('#toc-button').on('click', function(e) {
+  // wm-toc-button either opens the table of contents in the side-pane, or (on smaller screens)
+  // shows the side-pane as a drop-down.
+  $('#wm-toc-button').on('click', function(e) {
     if (window.matchMedia("(max-width: 600px)").matches) {
       $('.wm-toc-pane').toggleClass('wm-toc-dropdown');
       $('#wm-main-content').removeClass('wm-toc-hidden');
     } else {
       $('#main-content').toggleClass('wm-toc-hidden');
-      closeTocDropdown();
+      closeTempItems();
     }
     updateTocButtonState();
   });
 
-  // Update the state of the toc-button
+  // Update the state of the wm-toc-button
   updateTocButtonState();
-  $(window).on('resize', updateTocButtonState);
+  $(window).on('resize', function() {
+    updateTocButtonState();
+    updateContentHeight();
+  });
 
   // Connect up the Back and Forward buttons (if present).
   $('#hist-back').on('click', function(e) { window.history.back(); });
   $('#hist-fwd').on('click', function(e) { window.history.forward(); });
 
   // When the side-pane is a dropdown, hide it on click-away.
-  $(window).on('blur', closeTocDropdown);
+  $(window).on('blur', closeTempItems);
 
   // When we click on an opener in the table of contents, open it.
   $('.wm-toc-pane').on('click', '.wm-toc-opener', function(e) {
@@ -205,6 +224,18 @@ function initMainWindow() {
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
     document.title = iframeWindow.document.title;
+    updateContentHeight();
+
+    // We want to update content height whenever the height of the iframe's content changes.
+    // Using MutationObserver seems to be the best way to do that.
+    var observer = new MutationObserver(updateContentHeight);
+    observer.observe(iframeWindow.document.body, {
+      attributes: true,
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+
     iframeWindow.focus();
   });
 
@@ -218,7 +249,7 @@ function initMainWindow() {
 
 function onIframeBeforeLoad(url) {
   $('.wm-current').removeClass('wm-current');
-  closeTocDropdown();
+  closeTempItems();
 
   var tocLi = getTocLi(url);
   tocLi.addClass('wm-current');
@@ -402,14 +433,29 @@ function initSearch() {
   $(searchResults).on('click', '.search-all', function(e) {
     e.stopPropagation();
     e.preventDefault();
-    $('#search-form').trigger('submit');
+    $('#wm-search-form').trigger('submit');
   });
 
   // Redirect to the search page on Enter or button-click (form submit).
-  $('#search-form').on('submit', function(e) {
+  $('#wm-search-form').on('submit', function(e) {
     var url = this.action + '?' + $(this).serialize();
     visitUrl(url, e);
     searchResults.parent().removeClass('open');
+  });
+
+  $('#wm-search-show,#wm-search-go').on('click', function(e) {
+    if (window.matchMedia("(max-width: 600px)").matches) {
+      e.preventDefault();
+      var el = $('#mkdocs-search-query').closest('.wm-top-tool')
+      el.toggleClass('wm-top-tool-expanded');
+      if (el.hasClass('wm-top-tool-expanded')) {
+        setTimeout(function() {
+          $('#mkdocs-search-query').focus();
+          showSearchResults();
+        }, 0);
+        $('#mkdocs-search-query').focus();
+      }
+    }
   });
 }
 

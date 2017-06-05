@@ -26,31 +26,35 @@ body {
 
 .wm-top-brand {
   display: inline-block;
+  float: left;
   overflow: visible;
-  width: 10rem;
+  width: 0px;
   height: 50px;
-  padding: 0 15px;
-  margin-left: -15px;
   color: #fff;
   font-size: 18px;
-  line-height: 20px;
   white-space: nowrap;
   text-decoration: none;
 }
 
-.wm-top-link:hover, .wm-top-link:active, .wm-top-link:visited, .wm-top-link:focus {
+.wm-top-link, .wm-top-link:hover, .wm-top-link:active, .wm-top-link:visited, .wm-top-link:focus {
   color: #fff;
   text-decoration: none;
 }
 
-.wm-vcenter {
+.wm-vcenter:before {
+  content: '';
   display: inline-block;
   height: 100%;
+  vertical-align: middle;
+  margin-left: -0.25em;
+}
+
+.wm-vcentered {
+  display: inline-block;
   vertical-align: middle;
 }
 
 .wm-top-title {
-  margin-left: 1rem;
   display: inline-block;
   line-height: 16px;
   vertical-align: middle;
@@ -68,23 +72,26 @@ body {
   font-size: 8pt;
 }
 
-.wm-top-toolbar {
-  margin-top: 10px;
-  display: inline-block;
-  width: calc(100% - 10rem);
-  overflow: visible;
-  text-align: right;
+.wm-top-tool {
+  height: 50px;
+  white-space: nowrap;
 }
 
-.wm-top-tool {
-  display: inline-block;
-  white-space: nowrap;
-  vertical-align: middle;
+.wm-top-tool-expanded {
+  position: absolute;
+  right: 0px;
+  padding: inherit;
+  width: 100%;
+  background-color: #546e7a;
 }
 
 .wm-top-search {
-  max-width: 20rem;
-  margin-left: 1rem;
+  width: 20rem;
+}
+
+#wm-toc-button {
+  margin-right: 1rem;
+  margin-left: 0.5rem;
 }
 
 /***********************************************************************
@@ -92,7 +99,7 @@ body {
  ***********************************************************************/
 
 .wm-toc-pane {
-  position: fixed;
+  position: absolute;
   top: 0px;
   padding-top: 70px;
   height: 100%;
@@ -109,7 +116,7 @@ body {
 }
 
 .wm-content-pane {
-  position: fixed;
+  position: absolute;
   top: 0px;
   padding-top: 50px;
   height: 100%;
@@ -117,6 +124,9 @@ body {
   z-index: 0;
   padding-left: 250px;
   transition: padding-left 0.3s;
+  /* required for iPhone to scroll the contained iframe */
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
 }
 
 .wm-toc-pane.wm-toc-dropdown {
@@ -125,6 +135,15 @@ body {
   top: 0;
   left: 0;
   margin-left: 0;
+  height: auto;
+  box-shadow: 2px 3px 4px 0 grey;
+}
+
+.wm-toc-repo {
+  margin-top: -15px;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #e0e0e0;
 }
 
 .wm-toc-hidden > .wm-toc-pane {
@@ -135,12 +154,57 @@ body {
   padding-left: 0px;
 }
 
+.wm-small-show {
+  display: none;
+}
+
+#wm-search-form {
+  width: 100%;
+}
+#wm-search-show {
+  display: none;
+}
+
 @media (max-width: 600px) {
+  .wm-small-hide {
+    display: none;
+  }
+  .wm-small-show {
+    display: block;
+  }
+  .wm-small-left {
+    float: left !important;
+  }
+  #wm-search-show {
+    display: block;
+    margin-left: 1rem;
+  }
+  .wm-top-tool-expanded #wm-search-show {
+    display: none;
+  }
+  .wm-top-search {
+    display: none;
+  }
+  .wm-top-tool-expanded .wm-top-search {
+    display: table;
+    width: 100%;
+    padding: 0px;
+  }
+
+  .wm-top-page {
+    overflow: visible;
+  }
+  .wm-top-container {
+    /* This prevents horizontal overflow, but cuts off search results on bigger
+     * screens, so included in small-screen section */
+    overflow-x: hidden;
+  }
   .wm-toc-pane {
     display: none;
   }
   .wm-content-pane {
     padding-left: 0px;
+    overflow: visible;
   }
 }
 
@@ -176,7 +240,7 @@ body {
 }
 
 .wm-toc-opener > .wm-toc-text::before {
-  content: "\25B6";
+  content: "\25B6 \FE0E";
   display: inline-block;
   vertical-align: middle;
   font-size: 8px;
@@ -184,7 +248,7 @@ body {
 }
 
 .wm-toc-opener.wm-toc-open > .wm-toc-text::before {
-  content: "\25BC";
+  content: "\25BC \FE0E";
 }
 
 .wm-toc-li.wm-current, .wm-toc-li.wm-current:hover {

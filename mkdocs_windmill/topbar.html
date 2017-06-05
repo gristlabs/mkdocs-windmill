@@ -1,8 +1,41 @@
 <nav class="navbar wm-page-top-frame">
-  <div class="container-fluid">
+  <div class="container-fluid wm-top-container">
+    {# Search input and button #}
+    <div class="wm-top-tool pull-right wm-vcenter">
+      <form class="dropdown wm-vcentered" id="wm-search-form" action="{{ base_url }}/search.html">
+        {# Button to show search-box on small screens #}
+        <button id="wm-search-show" class="btn btn-sm btn-default" type="submit"
+          ><i class="fa fa-search" aria-hidden="true"></i></button>
+
+        <div class="input-group input-group-sm wm-top-search">
+          <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
+          <span class="input-group-btn" role="search">
+            {# This button is hidden, but exists because an element with data-toggle attr is relied on by bootstrap. #}
+            <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
+            <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right"></ul>
+            <button id="wm-search-go" class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
+          </span>
+        </div>
+      </form>
+    </div>
+
+    {# Table-of-contents button #}
+    <div class="wm-top-tool wm-vcenter pull-right wm-small-left">
+      <button id="wm-toc-button" type="button" class="btn btn-sm btn-default wm-vcentered"><i class="fa fa-th-list" aria-hidden="true"></i></button>
+    </div>
+
+    {# Optional forward-back buttons #}
+    {% if config.extra.history_buttons %}
+    <div class="wm-top-tool pull-right wm-vcenter">
+      <div class="btn-group wm-vcentered" role="group" aria-label="back">
+        <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
+        <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    {% endif %}
+
     {# Logo and title #}
-    <a href="{{ name }}" class="wm-top-brand wm-top-link">
-      <div class="wm-vcenter"></div>
+    <a href="{{ name }}" class="wm-top-brand wm-top-link wm-vcenter">
       {% if config.extra.logo %}
         <img class="wm-top-logo" src="{{ base_url }}/{{ config.extra.logo }}"/>
       {% endif %}
@@ -13,51 +46,5 @@
         {% endif %}
       </div>
     </a>
-
-    {# Toolbar with buttons and search #}
-    <div class="wm-top-toolbar pull-right">
-      <div class="wm-top-tool">
-        <div class="btn-toolbar text-nowrap" role="toolbar">
-          {% if config.extra.history_buttons %}
-          <div class="btn-group" role="group" aria-label="back">
-            <button id="hist-back" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-left" aria-hidden="true"></i></button>
-            <button id="hist-fwd" type="button" class="btn btn-sm btn-default"><i class="fa fa-arrow-right" aria-hidden="true"></i></button>
-          </div>
-          {% endif %}
-          <div class="btn-group" role="group" aria-label="side-pane">
-            <button id="toc-button" type="button" class="btn btn-sm btn-default"><i class="fa fa-th-list" aria-hidden="true"></i></button>
-          </div>
-        </div>
-      </div>
-      <div class="wm-top-tool">
-        <form class="dropdown" id="search-form" action="{{ base_url }}/search.html">
-          <div class="input-group input-group-sm wm-top-search">
-            <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
-            <span class="input-group-btn" role="search">
-              <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i></button>
-              {# This button is hidden, but exists because an element with data-toggle attr is relied on by bootstrap. #}
-              <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
-              <ul id="mkdocs-search-results" class="dropdown-menu dropdown-menu-right">
-              </ul>
-            </span>
-          </div>
-        </form>
-      </div>
-      {%- block repo %}
-        {%- if config.repo_url %}
-          <div class="wm-top-tool">
-            <div class="wm-vcenter"></div>
-            <a class="wm-top-link" href="{{ config.repo_url }}">
-                {%- if config.repo_name == 'GitHub' %}
-                    <i class="fa fa-github"></i>
-                {%- elif config.repo_name == 'Bitbucket' -%}
-                    <i class="fa fa-bitbucket"></i>
-                {%- endif -%}
-                {{ config.repo_name }}
-            </a>
-          </div>
-        {%- endif %}
-      {%- endblock %}
-    </div>
   </div>
 </nav>
