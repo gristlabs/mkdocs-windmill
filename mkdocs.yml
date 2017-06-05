@@ -22,4 +22,5 @@ markdown_extensions:
       permalink: '#'
 
 extra:
-  history_buttons: true
+  history_buttons: false
+  version: 0.1.0
