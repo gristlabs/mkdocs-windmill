@@ -71,6 +71,7 @@ function updateIframe(enableForwardNav) {
     currentIframeUrl === targetIframeUrl ? "same" : "replacing");
 
   if (currentIframeUrl !== targetIframeUrl) {
+    $(window).scrollTop(0);
     loc.replace(targetIframeUrl);
     onIframeBeforeLoad(targetIframeUrl);
   }
@@ -445,11 +446,15 @@ function initSearch() {
   $('#wm-search-show,#wm-search-go').on('click', function(e) {
     if (window.matchMedia("(max-width: 600px)").matches) {
       e.preventDefault();
-      $('#mkdocs-search-query').closest('.wm-top-tool').toggleClass('wm-top-tool-expanded');
-      setTimeout(function() {
+      var el = $('#mkdocs-search-query').closest('.wm-top-tool')
+      el.toggleClass('wm-top-tool-expanded');
+      if (el.hasClass('wm-top-tool-expanded')) {
+        setTimeout(function() {
+          $('#mkdocs-search-query').focus();
+          showSearchResults();
+        }, 0);
         $('#mkdocs-search-query').focus();
-        showSearchResults();
-      }, 0);
+      }
     }
   });
 }
