@@ -99,7 +99,7 @@ body {
  ***********************************************************************/
 
 .wm-toc-pane {
-  position: fixed;
+  position: absolute;
   top: 0px;
   padding-top: 70px;
   height: 100%;
@@ -116,7 +116,7 @@ body {
 }
 
 .wm-content-pane {
-  position: fixed;
+  position: absolute;
   top: 0px;
   padding-top: 50px;
   height: 100%;
@@ -124,6 +124,9 @@ body {
   z-index: 0;
   padding-left: 250px;
   transition: padding-left 0.3s;
+  /* required for iPhone to scroll the contained iframe */
+  -webkit-overflow-scrolling: touch;
+  overflow: auto;
 }
 
 .wm-toc-pane.wm-toc-dropdown {
@@ -132,6 +135,8 @@ body {
   top: 0;
   left: 0;
   margin-left: 0;
+  height: auto;
+  box-shadow: 2px 3px 4px 0 grey;
 }
 
 .wm-toc-repo {
@@ -186,7 +191,9 @@ body {
     padding: 0px;
   }
 
-
+  .wm-top-page {
+    overflow: visible;
+  }
   .wm-top-container {
     /* This prevents horizontal overflow, but cuts off search results on bigger
      * screens, so included in small-screen section */
@@ -197,6 +204,7 @@ body {
   }
   .wm-content-pane {
     padding-left: 0px;
+    overflow: visible;
   }
 }
 
@@ -232,7 +240,7 @@ body {
 }
 
 .wm-toc-opener > .wm-toc-text::before {
-  content: "\25B6";
+  content: "\25B6 \FE0E";
   display: inline-block;
   vertical-align: middle;
   font-size: 8px;
@@ -240,7 +248,7 @@ body {
 }
 
 .wm-toc-opener.wm-toc-open > .wm-toc-text::before {
-  content: "\25BC";
+  content: "\25BC \FE0E";
 }
 
 .wm-toc-li.wm-current, .wm-toc-li.wm-current:hover {

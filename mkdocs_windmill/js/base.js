@@ -16,6 +16,7 @@ var iframeWindow = null;
 var rootUrl = qualifyUrl(base_url);
 var searchIndex = null;
 var showPageToc = true;
+var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
 var Keys = {
   ENTER:  13,
@@ -114,6 +115,19 @@ function updateTocButtonState() {
 }
 
 /**
+ * Update the height of the iframe container. On small screens, we adjust it to fit the iframe
+ * contents, so that the page scrolls as a whole rather than inside the iframe.
+ */
+function updateContentHeight() {
+  console.log("updateContentHeight");
+  if (window.matchMedia("(max-width: 600px)").matches) {
+    $('.wm-content-pane').height(iframeWindow.document.body.offsetHeight + 20);
+  } else {
+    $('.wm-content-pane').height('');
+  }
+}
+
+/**
  * When TOC is a dropdown (on small screens), close it.
  */
 function closeTempItems() {
@@ -181,7 +195,10 @@ function initMainWindow() {
 
   // Update the state of the wm-toc-button
   updateTocButtonState();
-  $(window).on('resize', updateTocButtonState);
+  $(window).on('resize', function() {
+    updateTocButtonState();
+    updateContentHeight();
+  });
 
   // Connect up the Back and Forward buttons (if present).
   $('#hist-back').on('click', function(e) { window.history.back(); });
@@ -206,6 +223,18 @@ function initMainWindow() {
   // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
     document.title = iframeWindow.document.title;
+    updateContentHeight();
+
+    // We want to update content height whenever the height of the iframe's content changes.
+    // Using MutationObserver seems to be the best way to do that.
+    var observer = new MutationObserver(updateContentHeight);
+    observer.observe(iframeWindow.document.body, {
+      attributes: true,
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
+
     iframeWindow.focus();
   });
 
