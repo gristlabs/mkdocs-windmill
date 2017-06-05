@@ -1,3 +1,8 @@
+[![PyPI][pypi-image]][pypi-link]
+
+  [pypi-image]: https://img.shields.io/pypi/v/mkdocs-windmill.svg
+  [pypi-link]: https://pypi.python.org/pypi/mkdocs-windmill
+
 # Windmill theme for MkDocs
 Outstanding mkdocs theme with a focus on navigation and usability, from Grist Labs.
 
