@@ -20,6 +20,10 @@ body {
   overflow: hidden;
 }
 
+.wm-page-content {
+  max-width: 700px;
+}
+
 .wm-page-top-frame { display: none; }
 .wm-top-page > .wm-page-top-frame { display: block; }
 .wm-top-page > .wm-page-content { display: none; }
@@ -290,7 +294,8 @@ body {
 }
 
 .wm-article {
-  width: 100%;
+  width: 1px;
+  min-width: 100%;
   height: 100%;
   border: none;
 }

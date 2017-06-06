@@ -29,6 +29,13 @@ function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
 function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
 
 /**
+ * Returns whether to use small-screen mode. Note that the same size is used in css @media block.
+ */
+function isSmallScreen() {
+  return window.matchMedia("(max-width: 600px)").matches;
+}
+
+/**
  * Given a relative URL, returns the absolute one, relying on the browser to convert it.
  */
 function qualifyUrl(url) {
@@ -107,7 +114,7 @@ function getParam(key) {
  */
 function updateTocButtonState() {
   var shown;
-  if (window.matchMedia("(max-width: 600px)").matches) {
+  if (isSmallScreen()) {
     shown = $('.wm-toc-pane').hasClass('wm-toc-dropdown');
   } else {
     shown = !$('#main-content').hasClass('wm-toc-hidden');
@@ -120,11 +127,12 @@ function updateTocButtonState() {
  * contents, so that the page scrolls as a whole rather than inside the iframe.
  */
 function updateContentHeight() {
-  console.log("updateContentHeight");
-  if (window.matchMedia("(max-width: 600px)").matches) {
+  if (isSmallScreen()) {
     $('.wm-content-pane').height(iframeWindow.document.body.offsetHeight + 20);
+    $('.wm-article').attr('scrolling', 'no');
   } else {
     $('.wm-content-pane').height('');
+    $('.wm-article').attr('scrolling', 'auto');
   }
 }
 
@@ -184,7 +192,7 @@ function initMainWindow() {
   // wm-toc-button either opens the table of contents in the side-pane, or (on smaller screens)
   // shows the side-pane as a drop-down.
   $('#wm-toc-button').on('click', function(e) {
-    if (window.matchMedia("(max-width: 600px)").matches) {
+    if (isSmallScreen()) {
       $('.wm-toc-pane').toggleClass('wm-toc-dropdown');
       $('#wm-main-content').removeClass('wm-toc-hidden');
     } else {
@@ -444,7 +452,7 @@ function initSearch() {
   });
 
   $('#wm-search-show,#wm-search-go').on('click', function(e) {
-    if (window.matchMedia("(max-width: 600px)").matches) {
+    if (isSmallScreen()) {
       e.preventDefault();
       var el = $('#mkdocs-search-query').closest('.wm-top-tool')
       el.toggleClass('wm-top-tool-expanded');
