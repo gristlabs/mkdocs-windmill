@@ -6,6 +6,13 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fringilla volutpat
 
 ## Sub-Heading A1 2
 
+First Header | Second Header | Third Header
+-----------  |:-------------:| -----------:
+Left         | Center        | Right
+Left         | Center        | Right
+Left         | Center        | Right
+Left         | Center        | Right
+
 Etiam et sollicitudin dui, at tempor nulla. Suspendisse vitae scelerisque metus. Curabitur efficitur elementum felis id molestie. Proin auctor nulla nec tellus rhoncus, a rhoncus quam volutpat. Integer faucibus nisl et augue tincidunt convallis. Sed aliquet justo vel risus tempus, fringilla ultrices tortor fringilla. Nullam enim metus, commodo eu mi consequat, tincidunt varius nisi. Vestibulum aliquam ipsum ex, vel dignissim nulla sodales vel. In quis iaculis magna, sit amet imperdiet nisl.
 
 ## Sub-Heading A1 3
