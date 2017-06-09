@@ -355,7 +355,9 @@ if (is_top_frame) {
 
   // Other initialization of iframe contents.
   hljs.initHighlightingOnLoad();
-  $('table').addClass('table table-striped table-hover');
+  $(document).ready(() => {
+    $('table').addClass('table table-striped table-hover table-bordered table-condensed');
+  });
 }
 
 
