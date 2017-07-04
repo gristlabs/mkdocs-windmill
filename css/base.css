@@ -130,7 +130,6 @@ body {
   transition: padding-left 0.3s;
   /* required for iPhone to scroll the contained iframe */
   -webkit-overflow-scrolling: touch;
-  overflow: auto;
 }
 
 .wm-toc-pane.wm-toc-dropdown {
