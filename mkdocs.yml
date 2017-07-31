@@ -2,9 +2,9 @@ site_name: 'Windmill MkDocs Theme'
 site_description: 'MkDocs theme focused on navigation and usability.'
 site_author: 'Dmitry S'
 
-repo_url: https://github.com/gristlabs/mkdocs-windmill
+repo_url: https://github.com/guenbakku/mkdocs-windmillex
 
-theme_dir: mkdocs_windmill
+theme_dir: mkdocs_windmillex
 
 pages:
 - Windmill Theme:
