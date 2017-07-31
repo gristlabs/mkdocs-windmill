@@ -1,5 +1,7 @@
 body {
     background-color: #f8f8f8;
+    font-family: "メイリオ", sans-serif;
+    line-height: 1.7em;
 }
 
 /***********************************************************************
@@ -463,7 +465,7 @@ pre code {
     border: none;
     white-space: pre;
     word-wrap: normal;
-    font-family: monospace,serif;
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
     font-size: 12px;
 }
 
