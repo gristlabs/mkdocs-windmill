@@ -372,6 +372,7 @@ function initSearch() {
   // Create elasticlunr index.
   searchIndex = elasticlunr(function() {
     this.setRef('location');
+    this.use(elasticlunr.jp);
     this.addField('title');
     this.addField('text');
   });
