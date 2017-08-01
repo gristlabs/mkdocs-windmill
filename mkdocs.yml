@@ -6,17 +6,6 @@ repo_url: https://github.com/guenbakku/mkdocs-windmillex
 
 theme_dir: mkdocs_windmillex
 
-pages:
-- Windmill Theme:
-  - Usage: index.md
-  - Customization: customization.md
-- Samples:
-  - Sample Page A: sample-a.md
-  - Sample Subfolder:
-    - Sample Subpage A1: sample-a1.md
-    - Sample Subpage A2: sample-a2.md
-  - Sample Page B: sample-b.md
-
 markdown_extensions:
   - toc:
       permalink: '#'

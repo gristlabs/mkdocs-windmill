@@ -1,4 +1,4 @@
-# Heading A1
+# テーブル
 
 ## Sub-Heading A1 1
 
@@ -6,7 +6,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fringilla volutpat
 
 ## Sub-Heading A1 2
 
-First Header | Second Header | Third Header
+第一ヘッダー  | 第二ヘッダー   | 第三ヘッダー
 -----------  |:-------------:| -----------:
 Left         | Center        | Right
 Left         | Center        | Right
