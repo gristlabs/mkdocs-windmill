@@ -95,6 +95,11 @@ body {
   width: 20rem;
 }
 
+.wm-table th{
+    background: #546e7a;
+    color: #fff;
+}
+
 #wm-toc-button {
   margin-right: 1rem;
   margin-left: 0.5rem;
@@ -455,7 +460,7 @@ code {
     padding: 2px 5px;
     background: #fff;
     border: solid 1px #e1e4e5;
-    color: #333;
+    color: #c7254e;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
