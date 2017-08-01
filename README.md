@@ -1,9 +1,4 @@
-[![PyPI][pypi-image]][pypi-link]
-
-  [pypi-image]: https://img.shields.io/pypi/v/mkdocs-windmill.svg
-  [pypi-link]: https://pypi.python.org/pypi/mkdocs-windmill
-
-# Windmill theme for MkDocs
+# Customized theme of Windmill theme for MkDocs (support Japanese)
 Outstanding mkdocs theme with a focus on navigation and usability, from Grist Labs.
 
 Highlights:
@@ -17,16 +12,16 @@ Highlights:
 
 To install using `pip`:
 ``` sh
-pip install mkdocs-windmill
+pip install mkdocs-windmillex
 ```
 
 To use in `mkdocs.yml`:
 ``` yaml
-theme: windmill
+theme: windmillex
 ```
 
 ## Demo and documentation
 
-More details are on this site generated with the Windmill theme:
+Original Windmill theme's document and demo:
 - [Usage](https://gristlabs.github.io/mkdocs-windmill/#) for more on installation and usage.
 - [Customization](https://gristlabs.github.io/mkdocs-windmill/#customization/) for extra configuration options that Windmill supports.

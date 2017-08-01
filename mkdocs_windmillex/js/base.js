@@ -357,7 +357,8 @@ if (is_top_frame) {
   // Other initialization of iframe contents.
   hljs.initHighlightingOnLoad();
   $(document).ready(function() {
-    $('table').addClass('table table-striped table-hover table-bordered table-condensed');
+    $('table').addClass('table table-striped table-hover table-bordered table-condensed wm-table')
+              .wrap($('<div>').addClass('table-responsive'));
   });
 }
 
@@ -372,6 +373,7 @@ function initSearch() {
   // Create elasticlunr index.
   searchIndex = elasticlunr(function() {
     this.setRef('location');
+    this.use(elasticlunr.jp);
     this.addField('title');
     this.addField('text');
   });

@@ -1,5 +1,7 @@
 body {
     background-color: #f8f8f8;
+    font-family: "メイリオ", sans-serif;
+    line-height: 1.7em;
 }
 
 /***********************************************************************
@@ -21,7 +23,7 @@ body {
 }
 
 .wm-page-content {
-  max-width: 700px;
+  max-width: 90%;
 }
 
 .wm-page-top-frame { display: none; }
@@ -91,6 +93,11 @@ body {
 
 .wm-top-search {
   width: 20rem;
+}
+
+.wm-table th{
+    background: #546e7a;
+    color: #fff;
 }
 
 #wm-toc-button {
@@ -453,7 +460,7 @@ code {
     padding: 2px 5px;
     background: #fff;
     border: solid 1px #e1e4e5;
-    color: #333;
+    color: #c7254e;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
@@ -463,7 +470,7 @@ pre code {
     border: none;
     white-space: pre;
     word-wrap: normal;
-    font-family: monospace,serif;
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
     font-size: 12px;
 }
 
