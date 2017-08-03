@@ -78,10 +78,10 @@ function updateIframe(enableForwardNav) {
     currentIframeUrl === targetIframeUrl ? "same" : "replacing");
 
   if (currentIframeUrl !== targetIframeUrl) {
-    $(window).scrollTop(0);
     loc.replace(targetIframeUrl);
     onIframeBeforeLoad(targetIframeUrl);
   }
+  document.body.scrollTop = 0;
 }
 
 /**
