@@ -1,4 +1,4 @@
-/* global window, document, $, hljs, elasticlunr, base_url, is_top_frame */
+/* global window, document, $, hljs, elasticlunr, base_url, home_url, is_top_frame */
 /* exported getParam, onIframeLoad */
 "use strict";
 
@@ -13,7 +13,8 @@
 
 var mainWindow = is_top_frame ? window : (window.parent !== window ? window.parent : null);
 var iframeWindow = null;
-var rootUrl = qualifyUrl(base_url);
+var rootPath = qualifyUrl(home_url);
+var rootDir = qualifyUrl(base_url);
 var searchIndex = null;
 var showPageToc = true;
 var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -26,7 +27,8 @@ var Keys = {
 };
 
 function startsWith(str, prefix) { return str.lastIndexOf(prefix, 0) === 0; }
-function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
+//function endsWith(str, suffix) { return str.indexOf(suffix, str.length - suffix.length) !== -1; }
+function stripPrefix(str, prefix) { return startsWith(str, prefix) ? str.slice(prefix.length) : null; }
 
 /**
  * Returns whether to use small-screen mode. Note that the same size is used in css @media block.
@@ -44,20 +46,15 @@ function qualifyUrl(url) {
   return a.href;
 }
 
-/**
- * Turns an absolute path to relative, stripping out rootUrl + separator.
- */
-function getRelPath(separator, absUrl) {
-  var prefix = rootUrl + (endsWith(rootUrl, separator) ? '' : separator);
-  return startsWith(absUrl, prefix) ? absUrl.slice(prefix.length) : null;
+// Functions to convert between full URLs used to load actual page, and hash-using URLs used for
+// navigation of the main window.
+function getFullUrl(hashUrl) {
+  let rel = stripPrefix(hashUrl, rootPath + '#');
+  return rel === null ? rootPath : rootDir + rel;
 }
-
-/**
- * Turns a relative path to absolute, adding a prefix of rootUrl + separator.
- */
-function getAbsUrl(separator, relPath) {
-  var sep = endsWith(rootUrl, separator) ? '' : separator;
-  return relPath === null ? null : rootUrl + sep + relPath;
+function getHashUrl(fullUrl) {
+  let rel = stripPrefix(fullUrl, rootDir);
+  return rel === null ? null : rootPath + '#' + rel;
 }
 
 /**
@@ -69,8 +66,7 @@ function updateIframe(enableForwardNav) {
   // Grey out the "forward" button if we don't expect 'forward' to work.
   $('#hist-fwd').toggleClass('greybtn', !enableForwardNav);
 
-  var targetRelPath = getRelPath('#', mainWindow.location.href) || 'index.html';
-  var targetIframeUrl = getAbsUrl('/', targetRelPath);
+  var targetIframeUrl = getFullUrl(mainWindow.location.href);
   var loc = iframeWindow.location;
   var currentIframeUrl = _safeGetLocationHref(loc);
 
@@ -78,10 +74,10 @@ function updateIframe(enableForwardNav) {
     currentIframeUrl === targetIframeUrl ? "same" : "replacing");
 
   if (currentIframeUrl !== targetIframeUrl) {
+    document.body.scrollTop = 0;
     loc.replace(targetIframeUrl);
     onIframeBeforeLoad(targetIframeUrl);
   }
-  document.body.scrollTop = 0;
 }
 
 /**
@@ -126,9 +122,9 @@ function updateTocButtonState() {
  * Update the height of the iframe container. On small screens, we adjust it to fit the iframe
  * contents, so that the page scrolls as a whole rather than inside the iframe.
  */
-function updateContentHeight() {
+function updateContentHeight(iframeBodyHeight) {
   if (isSmallScreen()) {
-    $('.wm-content-pane').height(iframeWindow.document.body.offsetHeight + 20);
+    $('.wm-content-pane').height(iframeBodyHeight + 20);
     $('.wm-article').attr('scrolling', 'no');
   } else {
     $('.wm-content-pane').height('');
@@ -150,10 +146,9 @@ function closeTempItems() {
  * path, and points the iframe to the new URL.
  */
 function visitUrl(url, event) {
-  var relPath = getRelPath('/', url);
-  if (relPath !== null) {
+  var newUrl = getHashUrl(url);
+  if (newUrl !== null) {
     event.preventDefault();
-    var newUrl = getAbsUrl('#', relPath);
     if (newUrl !== mainWindow.location.href) {
       mainWindow.history.pushState(null, '', newUrl);
       updateIframe(false);
@@ -170,9 +165,8 @@ function visitUrl(url, event) {
 function adjustLink(linkEl) {
   if (!linkEl.hasAttribute('data-wm-adjusted')) {
     linkEl.setAttribute('data-wm-adjusted', 'done');
-    var relPath = getRelPath('/', linkEl.href);
-    if (relPath !== null) {
-      var newUrl = getAbsUrl('#', relPath);
+    var newUrl = getHashUrl(linkEl.href);
+    if (newUrl !== null) {
       linkEl.href = newUrl;
     }
   }
@@ -216,6 +210,18 @@ function initMainWindow() {
   // When the side-pane is a dropdown, hide it on click-away.
   $(window).on('blur', closeTempItems);
 
+  $(window).on('message', function(jevent) {
+    var ev = jevent.originalEvent;
+    if (ev.source !== iframeWindow) {
+      console.log("message event from unexpected source", ev.source);
+      return;
+    }
+    if (ev.data.name === 'iframeLoad') {
+      onIframeLoad(ev.data);
+    }
+    if (ev.data.height) { updateContentHeight(ev.data.height); }
+  });
+
   // When we click on an opener in the table of contents, open it.
   $('.wm-toc-pane').on('click', '.wm-toc-opener', function(e) {
     $(this).toggleClass('wm-toc-open');
@@ -229,22 +235,10 @@ function initMainWindow() {
     $(this).next('.wm-page-toc').collapse(showPageToc ? 'show' : 'hide');
   });
 
-  // Once the article loads in the side-pane, close the dropdown.
   $('.wm-article').on('load', function() {
-    document.title = iframeWindow.document.title;
-    updateContentHeight();
-
-    // We want to update content height whenever the height of the iframe's content changes.
-    // Using MutationObserver seems to be the best way to do that.
-    var observer = new MutationObserver(updateContentHeight);
-    observer.observe(iframeWindow.document.body, {
-      attributes: true,
-      childList: true,
-      characterData: true,
-      subtree: true
-    });
-
-    iframeWindow.focus();
+    setTimeout(function() {
+      iframeWindow.focus();
+    }, 0);
   });
 
   // Initialize search functionality.
@@ -269,19 +263,19 @@ function onIframeBeforeLoad(url) {
 }
 
 function getTocLi(url) {
-  var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(url)));
-  var selector = '.wm-article-link[href="' + relPath + '"]';
+  var topUrl = getHashUrl(cleanUrlPath(url));
+  var selector = '.wm-article-link[href="' + topUrl + '"]';
   return $(selector).closest('.wm-toc-li');
 }
 
-function onIframeLoad() {
-  var url = iframeWindow.location.href;
+function onIframeLoad(iframeData) {
+  var url = iframeData.url;
   onIframeBeforeLoad(url);
-
-  if (iframeWindow.pageToc) {
-    var relPath = getAbsUrl('#', getRelPath('/', cleanUrlPath(url)));
-    renderPageToc(getTocLi(url), relPath, iframeWindow.pageToc);
+  if (iframeData.pageToc) {
+    var topUrl = getHashUrl(cleanUrlPath(url));
+    renderPageToc(getTocLi(url), topUrl, iframeData.pageToc);
   }
+  if (iframeData.title) { document.title = iframeData.title; }
   iframeWindow.focus();
 }
 
@@ -325,7 +319,7 @@ function renderPageToc(parentElem, pageUrl, pageToc) {
 
 if (!mainWindow) {
   // This is a page that ought to be in an iframe. Redirect to load the top page instead.
-  var topUrl = getAbsUrl('#', getRelPath('/', window.location.href));
+  var topUrl = getHashUrl(window.location.href);
   if (topUrl) {
     window.location.href = topUrl;
   }
@@ -351,13 +345,36 @@ if (is_top_frame) {
   // Article contents.
   iframeWindow = window;
   if (mainWindow) {
-    mainWindow.onIframeLoad();
+    mainWindow.postMessage({
+      name: 'iframeLoad',
+      url: iframeWindow.location.href,
+      pageToc: iframeWindow.pageToc,
+      title: iframeWindow.document.title
+    }, '*');
   }
+
+  var updateHeight = function() {
+    mainWindow.postMessage({
+      height: document.body.offsetHeight
+    }, '*');
+  };
+
 
   // Other initialization of iframe contents.
   hljs.initHighlightingOnLoad();
   $(document).ready(function() {
     $('table').addClass('table table-striped table-hover table-bordered table-condensed');
+    updateHeight();
+
+    // We want to update content height whenever the height of the iframe's content changes.
+    // Using MutationObserver seems to be the best way to do that.
+    var observer = new MutationObserver(updateHeight);
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      characterData: true,
+      subtree: true
+    });
   });
 }
 

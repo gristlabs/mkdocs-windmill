@@ -321,6 +321,10 @@ body {
   right: 15px;
 }
 
+.wm-article-bottom {
+  height: 60px;
+}
+
 .wm-page-content img {
   max-width: 100%;
   display: inline-block;

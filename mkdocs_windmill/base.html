@@ -49,6 +49,7 @@
   {%- block scripts %}
     <script>
       var base_url = '{{ base_url }}';
+      var home_url = '{{ nav.homepage.url }}';
       var is_top_frame = {% if is_top %}(window === window.parent){% else %}false{% endif %};
       {%- if page %}
         {# Include the first two levels of TOC data as a JS object, to be rendered in top frame #}
@@ -132,7 +133,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
   <br>
   {%- if config.extra.article_nav_bottom != False %}
     {% include "article-nav.html" %}
-    <br>
+    <div class="wm-article-bottom"></div>
   {%- endif %}
 </div>
 
