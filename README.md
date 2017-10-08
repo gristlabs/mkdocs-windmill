@@ -27,6 +27,8 @@ theme: windmill
 
 ## Demo and documentation
 
+![](screenshot.png)
+
 More details are on this site generated with the Windmill theme:
 - [Usage](https://gristlabs.github.io/mkdocs-windmill/#) for more on installation and usage.
 - [Customization](https://gristlabs.github.io/mkdocs-windmill/#customization/) for extra configuration options that Windmill supports.
