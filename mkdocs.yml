@@ -4,7 +4,7 @@ site_author: 'Dmitry S'
 
 repo_url: https://github.com/gristlabs/mkdocs-windmill
 
-theme_dir: mkdocs_windmill
+theme: windmill
 
 pages:
 - Windmill Theme:
@@ -23,4 +23,4 @@ markdown_extensions:
 
 extra:
   history_buttons: false
-  version: 0.1.2
+  version: 0.1.3
