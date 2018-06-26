@@ -7,6 +7,8 @@ repo_url: https://github.com/gristlabs/mkdocs-windmill
 theme:
   name: null
   custom_dir: mkdocs_windmill
+  search_index_only: true
+  include_search_page: true
 
 pages:
 - Windmill Theme:
