@@ -2,7 +2,7 @@
     "docs": [
         {
             "location": "/", 
-            "text": "Windmill theme\n#\n\n\nAbout\n#\n\n\nWindmill theme focuses on clean usable navigation for large documentation\nprojects. It retains the state of the menu of pages and folders across page\ntransitions, by keeping navigation to an iframe.\n\n\nIt also implements a versatile search, featuring term highlighting, and both a\nquick dropdown and a full-page option that allows the user to come back to\nsearch results.\n\n\nWithin pages, it uses the default mkdocs theme, including syntax highlighting.\n\n\nInstallation\n#\n\n\nInstall the Windmill theme using \npip\n:\n\n\npip install mkdocs-windmill\n\n\n\n\nTo install and get started with \nmkdocs\n, follow \nMkDocs documentation\n.\n\n\nUsage\n#\n\n\nTo use the Windmill theme installed via \npip\n, add this to your \nmkdocs.yml\n:\n\n\ntheme: 'windmill'\n\n\n\n\nIf you cloned Windmill from GitHub:\n\n\ntheme_dir: 'mkdocs-windmill/mkdocs_windmill'\n\n\n\n\nSee \nCustomization\n for a few extra configuration options\nsupported by the Windmill theme.", 
+            "text": "Windmill theme\n#\n\n\nAbout\n#\n\n\nWindmill theme focuses on clean usable navigation for large documentation\nprojects. It retains the state of the menu of pages and folders across page\ntransitions, by keeping navigation to an iframe.\n\n\nIt also implements a versatile search, featuring term highlighting, and both a\nquick dropdown and a full-page option that allows the user to come back to\nsearch results.\n\n\nWithin pages, it uses the default mkdocs theme, including syntax highlighting.\n\n\nInstallation\n#\n\n\nInstall the Windmill theme using \npip\n:\n\n\npip install mkdocs-windmill\n\n\n\n\nTo install and get started with \nmkdocs\n, follow \nMkDocs documentation\n.\n\n\nUsage\n#\n\n\nTo use the Windmill theme installed via \npip\n, add this to your \nmkdocs.yml\n:\n\n\ntheme: 'windmill'\n\n\n\n\nIf you cloned Windmill from GitHub:\n\n\ntheme:\n  name: null\n  custom_dir: '{INSTALL_DIR}/mkdocs_windmill'\n  search_index_only: true\n  include_search_page: true\n\n\n\n\nSee \nCustomization\n for a few extra configuration options\nsupported by the Windmill theme.", 
             "title": "Usage"
         }, 
         {
@@ -22,7 +22,7 @@
         }, 
         {
             "location": "/#usage", 
-            "text": "To use the Windmill theme installed via  pip , add this to your  mkdocs.yml :  theme: 'windmill'  If you cloned Windmill from GitHub:  theme_dir: 'mkdocs-windmill/mkdocs_windmill'  See  Customization  for a few extra configuration options\nsupported by the Windmill theme.", 
+            "text": "To use the Windmill theme installed via  pip , add this to your  mkdocs.yml :  theme: 'windmill'  If you cloned Windmill from GitHub:  theme:\n  name: null\n  custom_dir: '{INSTALL_DIR}/mkdocs_windmill'\n  search_index_only: true\n  include_search_page: true  See  Customization  for a few extra configuration options\nsupported by the Windmill theme.", 
             "title": "Usage"
         }, 
         {

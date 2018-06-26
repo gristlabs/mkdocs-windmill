@@ -34,7 +34,7 @@
       var is_top_frame = (window === window.parent);
         
         var pageToc = [
-          {title: "Windmill theme", url: "#windmill-theme", children: [
+          {title: "Windmill theme", url: "#_top", children: [
               {title: "About", url: "#about" },
               {title: "Installation", url: "#installation" },
               {title: "Usage", url: "#usage" },
@@ -60,7 +60,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
           ><i class="fa fa-search" aria-hidden="true"></i></button>
 
         <div class="input-group input-group-sm wm-top-search">
-          <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search">
+          <input type="text" name="q" class="form-control" id="mkdocs-search-query" placeholder="Search" autocomplete="off">
           <span class="input-group-btn" role="search">
             
             <button class="btn btn-default dropdown-toggle collapse" data-toggle="dropdown" type="button"><span class="caret"></span></button>
@@ -85,7 +85,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
       <div class="wm-top-title">
         Windmill MkDocs Theme<br>
         
-          <span class="wm-top-version">v0.1.2</span>
+          <span class="wm-top-version">v0.1.4</span>
         
       </div>
     </a>
@@ -98,7 +98,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
   
     <ul class="wm-toctree wm-toc-repo">
       <li class="wm-toc-li wm-toc-lev1">
-      <a class="wm-article-link wm-toc-text" href="https://github.com/gristlabs/mkdocs-windmill">
+      <a class="wm-article-link wm-toc-text" href="https://github.com/gristlabs/mkdocs-windmill/">
         <i class="fa fa-github"></i>
         GitHub
       </a>
@@ -147,6 +147,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
   </div>
 
 <div class="container-fluid wm-page-content">
+  <a name="_top"></a>
     
 
   <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
@@ -186,7 +187,11 @@ search results.</p>
 </code></pre>
 
 <p>If you cloned Windmill from GitHub:</p>
-<pre><code class="yaml">theme_dir: 'mkdocs-windmill/mkdocs_windmill'
+<pre><code class="yaml">theme:
+  name: null
+  custom_dir: '{INSTALL_DIR}/mkdocs_windmill'
+  search_index_only: true
+  include_search_page: true
 </code></pre>
 
 <p>See <a href="customization/">Customization</a> for a few extra configuration options
@@ -219,6 +224,6 @@ supported by the Windmill theme.</p>
 </body>
 </html>
 <!--
-MkDocs version : 0.16.3
-Build Date UTC : 2017-07-04 05:46:41
+MkDocs version : 0.17.4
+Build Date UTC : 2018-06-26 17:11:44
 -->
