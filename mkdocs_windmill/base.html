@@ -54,7 +54,7 @@
         {# Include the first two levels of TOC data as a JS object, to be rendered in top frame #}
         var pageToc = [
         {%- for item in page.toc %}
-          {title: {{ item.title|tojson }}, url: {{ item.url|tojson }}, children: [
+          {title: {{ item.title|tojson }}, url: {{ ('#_top' if loop.first else item.url)|tojson }}, children: [
             {%- for item in item.children %}
               {title: {{ item.title|tojson }}, url: {{ item.url|tojson }} },
             {%- endfor %}
@@ -113,6 +113,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 {# Code for the main template for all content pages. #}
 
 <div class="container-fluid wm-page-content">
+  <a name="_top"></a>
   {%- if config.extra.article_nav_top != False %}
     {% include "article-nav.html" %}
   {%- endif %}

@@ -316,9 +316,6 @@ body {
 
 .wm-article-nav-buttons {
   margin: 1rem 0;
-  position: absolute;
-  left: 15px;
-  right: 15px;
 }
 
 .wm-page-content img {
@@ -430,8 +427,6 @@ h1 {
     color: #444;
     font-weight: 400;
     font-size: 42px;
-    margin-top: 0;
-    padding-top: 57px
 }
 
 h2, h3, h4, h5, h6 {
