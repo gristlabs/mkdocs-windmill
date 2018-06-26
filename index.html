@@ -190,6 +190,8 @@ search results.</p>
 <pre><code class="yaml">theme:
   name: null
   custom_dir: '{INSTALL_DIR}/mkdocs_windmill'
+  # Copy settings from mkdocs_theme.yml, which is ignored by custom_dir themes.
+  static_templates: [404.html]
   search_index_only: true
   include_search_page: true
 </code></pre>
@@ -225,5 +227,5 @@ supported by the Windmill theme.</p>
 </html>
 <!--
 MkDocs version : 0.17.4
-Build Date UTC : 2018-06-26 18:08:31
+Build Date UTC : 2018-06-26 18:17:34
 -->
