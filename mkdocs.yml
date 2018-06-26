@@ -4,7 +4,9 @@ site_author: 'Dmitry S'
 
 repo_url: https://github.com/gristlabs/mkdocs-windmill
 
-theme: windmill
+theme:
+  name: null
+  custom_dir: mkdocs_windmill
 
 pages:
 - Windmill Theme:
