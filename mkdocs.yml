@@ -27,4 +27,4 @@ markdown_extensions:
 
 extra:
   history_buttons: false
-  version: 0.1.3
+  version: 0.1.4
