@@ -139,6 +139,38 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
 
 <footer class="col-md-12 wm-page-content">
 {%- block footer %}
+  {%- block repo %}
+    {%- if page and page.edit_url %}
+      <p>
+        <a href="{{ page.edit_url }}">
+            {%- if config.repo_name == 'GitHub' -%}
+            <i class="fa fa-github"></i> Edit on {{ config.repo_name }}
+            {%- elif config.repo_name == 'Bitbucket' -%}
+            <i class="fa fa-bitbucket"></i> Edit on {{ config.repo_name }}
+            {%- elif config.repo_name == 'GitLab' -%}
+            <i class="fa fa-gitlab"></i> Edit on {{ config.repo_name }}
+            {%- else -%}
+            Edit on {{ config.repo_name }}
+            {%- endif -%}
+        </a>
+      </p>
+    {%- elif config.repo_url %}
+      <p>
+        <a href="{{ config.repo_url }}">
+            {%- if config.repo_name == 'GitHub' -%}
+            <i class="fa fa-github"></i> {{ config.repo_name }}
+            {%- elif config.repo_name == 'Bitbucket' -%}
+            <i class="fa fa-bitbucket"></i> {{ config.repo_name }}
+            {%- elif config.repo_name == 'GitLab' -%}
+            <i class="fa fa-gitlab"></i> {{ config.repo_name }}
+            {%- else -%}
+            {{ config.repo_name }}
+            {%- endif -%}
+        </a>
+      </p>
+    {%- endif %}
+  {%- endblock %}
+
   {%- if config.copyright %}<p>{{ config.copyright }}</p>{%- endif %}
   <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a> using <a href="https://github.com/gristlabs/mkdocs-windmill">Windmill</a> theme by Grist Labs.</p>
 {%- endblock %}
