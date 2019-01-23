@@ -1,6 +1,7 @@
 site_name: 'Windmill MkDocs Theme'
 site_description: 'MkDocs theme focused on navigation and usability.'
 site_author: 'Dmitry S'
+use_directory_urls: false
 
 repo_url: https://github.com/gristlabs/mkdocs-windmill
 
@@ -12,10 +13,10 @@ theme:
   search_index_only: true
   include_search_page: true
 
+# This should be renamed to nav for mkdocs 1.0+
 pages:
-- Windmill Theme:
-  - Usage: index.md
-  - Customization: customization.md
+- Usage: index.md
+- Customization: customization.md
 - Samples:
   - Sample Page A: sample-a.md
   - Sample Subfolder:

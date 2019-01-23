@@ -4,7 +4,7 @@ default:
 	@echo "Specify one of: serve, publish_docs, publish_package"
 
 serve:
-	env/bin/mkdocs serve -s -a 0.0.0.0:8000
+	env/bin/mkdocs serve -a localhost:8000
 
 publish_docs:
 	env/bin/mkdocs gh-deploy
