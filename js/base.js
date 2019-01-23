@@ -364,8 +364,8 @@ if (is_top_frame) {
 
 var searchIndexReady = false;
 
-function withBaseUrl(href) {
-  return base_url === "." ? href : base_url + href;
+function addBaseUrl(href) {
+  return base_url === "." && !startsWith(href, "/") ? href : base_url + href;
 }
 
 /**
@@ -383,10 +383,10 @@ function initSearch() {
   var searchResults = $('#mkdocs-search-results');
 
   // Fetch the prebuilt index data, and add to the index.
-  $.getJSON(withBaseUrl('/search/search_index.json'))
+  $.getJSON(base_url + '/search/search_index.json')
   .done(function(data) {
     data.docs.forEach(function(doc) {
-      doc.location = withBaseUrl(doc.location);
+      doc.location = addBaseUrl(doc.location);
       searchIndex.addDoc(doc);
     });
     searchIndexReady = true;
