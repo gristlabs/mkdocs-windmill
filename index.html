@@ -85,7 +85,7 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
       <div class="wm-top-title">
         Windmill MkDocs Theme<br>
         
-          <span class="wm-top-version">v0.1.6</span>
+          <span class="wm-top-version">v0.1.7</span>
         
       </div>
     </a>
@@ -106,35 +106,28 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
       </li>
     </ul>
   <ul class="wm-toctree">
-        <li class="wm-toc-li wm-toc-lev1 wm-toc-opener"><span class="wm-toc-text">Windmill Theme</span>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="index.html" class="wm-article-link wm-toc-text">Usage</a>
 </li>
-<li class="wm-toc-li-nested collapse">
-  <ul class="wm-toctree">
-      <li class="wm-toc-li wm-toc-lev2 "><a href="." class="wm-article-link wm-toc-text">Usage</a>
+        <li class="wm-toc-li wm-toc-lev1 "><a href="customization.html" class="wm-article-link wm-toc-text">Customization</a>
 </li>
-      <li class="wm-toc-li wm-toc-lev2 "><a href="customization/" class="wm-article-link wm-toc-text">Customization</a>
-</li>
-  </ul>
-</li>
-
         <li class="wm-toc-li wm-toc-lev1 wm-toc-opener"><span class="wm-toc-text">Samples</span>
 </li>
 <li class="wm-toc-li-nested collapse">
   <ul class="wm-toctree">
-      <li class="wm-toc-li wm-toc-lev2 "><a href="sample-a/" class="wm-article-link wm-toc-text">Sample Page A</a>
+      <li class="wm-toc-li wm-toc-lev2 "><a href="sample-a.html" class="wm-article-link wm-toc-text">Sample Page A</a>
 </li>
       <li class="wm-toc-li wm-toc-lev2 wm-toc-opener"><span class="wm-toc-text">Sample Subfolder</span>
 </li>
 <li class="wm-toc-li-nested collapse">
   <ul class="wm-toctree">
-      <li class="wm-toc-li wm-toc-lev3 "><a href="sample-a1/" class="wm-article-link wm-toc-text">Sample Subpage A1</a>
+      <li class="wm-toc-li wm-toc-lev3 "><a href="sample-a1.html" class="wm-article-link wm-toc-text">Sample Subpage A1</a>
 </li>
-      <li class="wm-toc-li wm-toc-lev3 "><a href="sample-a2/" class="wm-article-link wm-toc-text">Sample Subpage A2</a>
+      <li class="wm-toc-li wm-toc-lev3 "><a href="sample-a2.html" class="wm-article-link wm-toc-text">Sample Subpage A2</a>
 </li>
   </ul>
 </li>
 
-      <li class="wm-toc-li wm-toc-lev2 "><a href="sample-b/" class="wm-article-link wm-toc-text">Sample Page B</a>
+      <li class="wm-toc-li wm-toc-lev2 "><a href="sample-b.html" class="wm-article-link wm-toc-text">Sample Page B</a>
 </li>
   </ul>
 </li>
@@ -154,11 +147,11 @@ if (is_top_frame) { $('body').addClass('wm-top-page'); }
   <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
     
     <div class="wm-article-nav pull-right">
-      <a href="customization/" class="btn btn-xs btn-default pull-right">
+      <a href="customization.html" class="btn btn-xs btn-default pull-right">
         Next
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
       </a>
-      <a href="customization/" class="btn btn-xs btn-link">
+      <a href="customization.html" class="btn btn-xs btn-link">
         Customization
       </a>
     </div>
@@ -185,6 +178,9 @@ search results.</p>
 <h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">#</a></h2>
 <p>To use the Windmill theme installed via <code>pip</code>, add this to your <code>mkdocs.yml</code>:</p>
 <pre><code class="yaml">theme: 'windmill'
+
+# required with mkdocs 1.0+:
+use_directory_urls: false
 </code></pre>
 
 <p>If you cloned Windmill from GitHub:</p>
@@ -195,9 +191,17 @@ search results.</p>
   static_templates: [404.html]
   search_index_only: true
   include_search_page: true
+
+# required with mkdocs 1.0+:
+use_directory_urls: false
 </code></pre>
 
-<p>See <a href="customization/">Customization</a> for a few extra configuration options
+<p>Note that it's important for there to exist a homepage, e.g. a top-level root element in mkdocs 1.0+:</p>
+<pre><code class="yaml">nav:
+  - Home: index.md
+</code></pre>
+
+<p>See <a href="customization.html">Customization</a> for a few extra configuration options
 supported by the Windmill theme.</p>
 
   <br>
@@ -206,11 +210,11 @@ supported by the Windmill theme.</p>
   <div class="row wm-article-nav-buttons" role="navigation" aria-label="navigation">
     
     <div class="wm-article-nav pull-right">
-      <a href="customization/" class="btn btn-xs btn-default pull-right">
+      <a href="customization.html" class="btn btn-xs btn-default pull-right">
         Next
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
       </a>
-      <a href="customization/" class="btn btn-xs btn-link">
+      <a href="customization.html" class="btn btn-xs btn-link">
         Customization
       </a>
     </div>
@@ -231,6 +235,6 @@ Edit on GitHub</a>
 </body>
 </html>
 <!--
-MkDocs version : 0.17.4
-Build Date UTC : 2018-07-17 04:06:09
+MkDocs version : 1.0.4
+Build Date UTC : 2019-01-23 14:46:26
 -->
