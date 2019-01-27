@@ -15,7 +15,7 @@ publish_package:
 	@echo "Publish to PyPI at https://pypi.python.org/pypi/mkdocs-windmill"
 	@echo "Version in setup.py is $(VERSION)"
 	@echo "Git tag is `git describe --tags`"
-	@echo "Run this manually: env/bin/twine upload dist/mkdocs-windmill-$(VERSION).tar.gz dist/mkdocs_windmill-$(VERSION)-py2-none-any.whl"
+	@echo "Run this manually: python3 -m twine upload dist/mkdocs-windmill-$(VERSION).tar.gz dist/mkdocs_windmill-$(VERSION)-py2-none-any.whl"
 
 
 .PHONY: serve publish_docs publish_package

@@ -28,9 +28,6 @@ To use the Windmill theme installed via `pip`, add this to your `mkdocs.yml`:
 
 ``` yaml
 theme: 'windmill'
-
-# required with mkdocs 1.0+:
-use_directory_urls: false
 ```
 
 If you cloned Windmill from GitHub:
@@ -43,9 +40,6 @@ theme:
   static_templates: [404.html]
   search_index_only: true
   include_search_page: true
-
-# required with mkdocs 1.0+:
-use_directory_urls: false
 ```
 
 Note that it's important for there to exist a homepage, e.g. a top-level root element in mkdocs 1.0+:
