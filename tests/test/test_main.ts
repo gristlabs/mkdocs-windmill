@@ -34,7 +34,14 @@ describe('mkdocs_windmill', () => {
   });
 
   it('should load the homepage', async () => {
-    // Menu has first page ('Usage') selected.
+    // Menu has links for items, including the first one.
+    assert.equal(await driver.findContent('.wm-toc-pane .wm-toc-text', /Usage/).getTagName(), 'a');
+    assert.equal(await driver.findContent('.wm-toc-pane .wm-toc-text', /Cust/).getTagName(), 'a');
+
+    // In certain configurations, the first page isn't selected until clicked in
+    // (this could be fixed, but for now we just test that it works once clicked).
+    await driver.findContent('.wm-toc-pane .wm-article-link', /Cust/).click();
+    await driver.findContent('.wm-toc-pane .wm-article-link', /Usage/).click();
     assert.equal(await driver.find('.wm-current').getText(), 'Usage');
 
     // The page table-of-contents is expanded in the menu.
