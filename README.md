@@ -36,3 +36,23 @@ nav:
 More details are on this site generated with the Windmill theme:
 - [Usage](https://gristlabs.github.io/mkdocs-windmill/#) for more on installation and usage.
 - [Customization](https://gristlabs.github.io/mkdocs-windmill/#customization/) for extra configuration options that Windmill supports.
+
+## Development
+
+If doing development on `mkdocs-windmill`, check it out with
+``` sh
+git clone https://github.com/gristlabs/mkdocs-windmill/
+cd mkdocs-windmill
+```
+
+There are Selenium browser tests, based on NodeJS. To set them up, first [install Yarn](https://yarnpkg.com/en/docs/install), then from `mkdocs-windmill` checkout, run
+``` sh
+cd tests
+yarn install
+```
+
+You can run tests when you make changes as follows:
+``` sh
+cd tests
+MKDOCS_BINARY=<path-to-mkdocs-command> SELENIUM_BROWSER=chrome yarn test
+```

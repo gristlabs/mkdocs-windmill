@@ -5,7 +5,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "test": "mocha test/**/*.ts"
+    "test": "mocha test/**/*.ts",
+    "test-debug": "mocha test/**/*.ts -b --no-exit"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",

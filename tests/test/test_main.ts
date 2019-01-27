@@ -76,7 +76,7 @@ describe('mkdocs_windmill', () => {
   });
 
   it('should follow links in search dropdown', async function() {
-    await driver.find('#mkdocs-search-query').doSendKeys('false');
+    await driver.find('#mkdocs-search-query').doSendKeys('extra');
     await assert.includeMembers(await driver.findAll('#mkdocs-search-results .search-title',
       (el) => el.getText()), ['Extra configuration options', 'Usage']);
     await driver.findContent('#mkdocs-search-results .search-title', /Extra conf/).click();
@@ -95,7 +95,7 @@ describe('mkdocs_windmill', () => {
   });
 
   it('should follow links in search results page', async function() {
-    await driver.find('#mkdocs-search-query').doClear().doSendKeys('false', Key.ENTER);
+    await driver.find('#mkdocs-search-query').doClear().doSendKeys('extra', Key.ENTER);
 
     // Switch to the iframe with results. The actual elements to interact with are similar to the
     // case above, because the search code is actually reused.
