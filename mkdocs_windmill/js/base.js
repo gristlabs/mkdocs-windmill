@@ -531,9 +531,8 @@ function doSearch(options) {
     for (var i = 0; i < len; i++) {
       var doc = searchIndex.documentStore.getDoc(results[i].ref);
       var snippet = snippetBuilder.getSnippet(doc.text, snippetLen);
-
       resultsElem.append(
-        $('<li>').append($('<a class="search-link">').attr('href', base_url + "/" + doc.location)
+        $('<li>').append($('<a class="search-link">').attr('href', pathJoin(base_url, doc.location))
           .append($('<div class="search-title">').text(doc.title))
           .append($('<div class="search-text">').html(snippet)))
       );
@@ -548,4 +547,10 @@ function doSearch(options) {
   } else {
     resultsElem.append($('<li class="disabled"><a class="search-link">NO RESULTS FOUND</a></li>'));
   }
+}
+
+function pathJoin(prefix, suffix) {
+  var nPrefix = endsWith(prefix, "/") ? prefix.slice(0, -1) : prefix;
+  var nSuffix = startsWith(suffix, "/") ? suffix.slice(1) : suffix;
+  return nPrefix + "/" + nSuffix;
 }
