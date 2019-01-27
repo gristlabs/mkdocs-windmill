@@ -364,10 +364,6 @@ if (is_top_frame) {
 
 var searchIndexReady = false;
 
-function addBaseUrl(href) {
-  return base_url === "." && !startsWith(href, "/") ? href : base_url + href;
-}
-
 /**
  * Initialize search functionality.
  */
@@ -386,7 +382,6 @@ function initSearch() {
   $.getJSON(base_url + '/search/search_index.json')
   .done(function(data) {
     data.docs.forEach(function(doc) {
-      doc.location = addBaseUrl(doc.location);
       searchIndex.addDoc(doc);
     });
     searchIndexReady = true;
@@ -538,11 +533,12 @@ function doSearch(options) {
       var snippet = snippetBuilder.getSnippet(doc.text, snippetLen);
 
       resultsElem.append(
-        $('<li>').append($('<a class="search-link">').attr('href', doc.location)
+        $('<li>').append($('<a class="search-link">').attr('href', base_url + "/" + doc.location)
           .append($('<div class="search-title">').text(doc.title))
           .append($('<div class="search-text">').html(snippet)))
       );
     }
+    resultsElem.find('a').each(function() { adjustLink(this); });
     if (limit) {
       resultsElem.append($('<li role="separator" class="divider"></li>'));
       resultsElem.append($(
