@@ -6,6 +6,15 @@ setup(
     name="mkdocs-windmill",
     version=VERSION,
     url='https://github.com/gristlabs/mkdocs-windmill',
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'License :: OSI Approved :: MIT License',
+        'Topic :: Documentation',
+        'Topic :: Text Processing',
+    ],
+    install_requires=[
+        'mkdocs',
+    ],
     license='MIT',
     description='MkDocs theme focused on navigation and usability',
     author='Dmitry S',
