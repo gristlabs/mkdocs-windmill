@@ -1,19 +1,36 @@
 import {ChildProcess, spawn} from 'child_process';
 import {assert, driver, IMochaServer, Key, useServer} from 'mocha-webdriver';
+import fetch from 'node-fetch';
 // tslint:disable:no-console
 
 class MkdocsServer implements IMochaServer {
   public _proc?: ChildProcess;
+  private _exitPromise: Promise<number|string> = Promise.resolve("not-started");
+
   public async start() {
     this._proc = spawn(process.env.MKDOCS_BINARY || 'env/bin/mkdocs', ['serve', '-a', 'localhost:8000'],
       {cwd: '..', stdio: 'inherit'});
+    this._exitPromise = exitPromise(this._proc);
+    await this.waitServerReady(20000);
   }
   public async stop() {
     if (this._proc) {
       this._proc.kill('SIGINT');
-      const res = await exitPromise(this._proc);
+      const res = await this._exitPromise;
       if (res !== 0) { console.log("ERROR: could not run mkdocs: %s", res); }
     }
+  }
+  /**
+   * Wait for the server to be up and responsitve, for up to `ms` milliseconds.
+   */
+  public async waitServerReady(ms: number): Promise<void> {
+    await driver.wait(() => Promise.race([
+      this.isServerReady(),
+      this._exitPromise.then(() => { throw new Error("Server exited while waiting for it"); }),
+    ]), ms);
+  }
+  public isServerReady(): Promise<boolean> {
+    return fetch(this.getHost()).then((r) => r.ok).catch(() => false);
   }
   public getHost() {
     return "http://localhost:8000";
@@ -26,7 +43,7 @@ describe('mkdocs_windmill', () => {
 
   before(async function() {
     this.timeout(60000);      // Set a longer default timeout.
-    await driver.get(`${server.getHost()}`);
+    await driver.get(server.getHost());
   });
 
   beforeEach(async () => {

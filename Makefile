@@ -6,6 +6,12 @@ default:
 serve:
 	env/bin/mkdocs serve -a localhost:8000
 
+test:
+	env MKDOCS_BINARY=env/bin/mkdocs npm -C tests test
+
+test-debug:
+	env MKDOCS_BINARY=env/bin/mkdocs npm -C tests run test-debug
+
 publish_docs:
 	env/bin/mkdocs gh-deploy
 
@@ -16,6 +22,5 @@ publish_package:
 	@echo "Version in setup.py is $(VERSION)"
 	@echo "Git tag is `git describe --tags`"
 	@echo "Run this manually: python3 -m twine upload dist/mkdocs-windmill-$(VERSION).tar.gz dist/mkdocs_windmill-$(VERSION)-py2-none-any.whl"
-
 
 .PHONY: serve publish_docs publish_package
