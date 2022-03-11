@@ -294,14 +294,6 @@ function onIframeLoad() {
     renderPageToc(getTocLi(url), relPath, iframeWindow.pageToc);
   }
   iframeWindow.focus();
-
-  iframeWindow.addEventListener('scroll', (ev) => {
-    const state = history.state || {};
-    state.pageYOffset = iframeWindow.pageYOffset;
-    // TODO this is called from updateIframe, which is incorrect
-    console.log("REPLACE STATE", state);
-    history.replaceState(state, "");
-  });
 }
 
 /**
@@ -378,12 +370,6 @@ if (is_top_frame) {
   hljs.initHighlightingOnLoad();
   $(document).ready(function() {
     $('table').addClass('table table-striped table-hover table-bordered table-condensed');
-
-    // Restore scroll position
-    const state = mainWindow.history.state;
-    const pageYOffset = state && state.pageYOffset || 0;
-    console.log("Restoring scroll position to", pageYOffset);
-    window.scrollTo(0, pageYOffset);
   });
 }
 
