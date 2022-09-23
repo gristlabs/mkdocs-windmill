@@ -535,3 +535,43 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
     font-weight: bold;
     text-align: left;
 }
+
+/****************************
+*    Custom modifications   *
+*****************************/
+
+.leftsidetable {
+  width: 43%;
+  float: left;
+  margin-right: 1em;
+  margin-bottom: 3px;
+}
+
+.rightsidetable {
+  width: 43%;
+  float: right;
+  margin-left: 1em;
+  margin-bottom: 3px;
+  }
+
+.creditright {
+  margin-top: 3px;
+  font-size: 9px;
+  text-align: right;
+  display: inline-block;
+  clear: right;
+}
+
+.creditleft {
+  margin-top: 3px;
+  font-size: 9px;
+  text-align: left;
+  display: inline-block;
+  clear: left;
+}
+
+.clearfix::after {
+  content: "";
+  clear: both;
+  display: table;
+}
